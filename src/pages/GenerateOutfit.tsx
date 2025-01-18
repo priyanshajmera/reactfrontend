@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sun, Cloud, Heart, Briefcase, ShoppingBag, Building, PartyPopper, Thermometer, Umbrella, Snowflake, Shirt, Star, Check, X } from 'lucide-react';
 
@@ -11,6 +11,35 @@ const GenerateOutfit = () => {
     timeOfDay: '',
     layering: false,
   });
+
+  const [outfits, setOutfits] = useState([
+    {
+      id: 1,
+      images: [
+        "https://via.placeholder.com/400/0000FF/FFFFFF?text=Outfit+1+Pic+1",
+        "https://via.placeholder.com/400/FF0000/FFFFFF?text=Outfit+1+Pic+2",
+        "https://via.placeholder.com/400/00FF00/FFFFFF?text=Outfit+1+Pic+3"
+      ],
+      styleDescription: "This outfit combines trendy and minimalistic elements for a stylish yet comfortable look.",
+    },
+    {
+      id: 2,
+      images: [
+        "https://via.placeholder.com/400/FF00FF/FFFFFF?text=Outfit+2+Pic+1",
+        "https://via.placeholder.com/400/FFFF00/FFFFFF?text=Outfit+2+Pic+2",
+        "https://via.placeholder.com/400/00FFFF/FFFFFF?text=Outfit+2+Pic+3"
+      ],
+      styleDescription: "A classic outfit designed for both elegance and versatility.",
+    },
+  ]);
+  const [currentOutfit, setCurrentOutfit] = useState(0);
+  const [showStyleDescription, setShowStyleDescription] = useState(false);
+  const [typedText, setTypedText] = useState('');
+
+  useEffect(() => {
+    setShowStyleDescription(false); // Reset styling description visibility
+    setTypedText(''); // Clear any existing text
+  }, [currentOutfit]);
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
@@ -43,7 +72,7 @@ const GenerateOutfit = () => {
                   <button
                     key={label}
                     onClick={() => handleChange('occasion', label)}
-                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.occasion === label ? 'bg-purple-500/20' : ''}`}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors hover:bg-purple-500/30 ${formData.occasion === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -59,7 +88,7 @@ const GenerateOutfit = () => {
                   <button
                     key={label}
                     onClick={() => handleChange('weather', label)}
-                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.weather === label ? 'bg-purple-500/20' : ''}`}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors hover:bg-purple-500/30 ${formData.weather === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -75,7 +104,7 @@ const GenerateOutfit = () => {
                   <button
                     key={label}
                     onClick={() => handleChange('style', label)}
-                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.style === label ? 'bg-purple-500/20' : ''}`}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors hover:bg-purple-500/30 ${formData.style === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -91,7 +120,7 @@ const GenerateOutfit = () => {
                   <button
                     key={label}
                     onClick={() => handleChange('fit', label)}
-                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.fit === label ? 'bg-purple-500/20' : ''}`}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors hover:bg-purple-500/30 ${formData.fit === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -107,7 +136,7 @@ const GenerateOutfit = () => {
                   <button
                     key={label}
                     onClick={() => handleChange('timeOfDay', label)}
-                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.timeOfDay === label ? 'bg-purple-500/20' : ''}`}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors hover:bg-purple-500/30 ${formData.timeOfDay === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -123,7 +152,7 @@ const GenerateOutfit = () => {
                   <button
                     key={label}
                     onClick={() => handleChange('layering', label === 'Yes')}
-                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.layering === (label === 'Yes') ? 'bg-purple-500/20' : ''}`}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors hover:bg-purple-500/30 ${formData.layering === (label === 'Yes') ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -142,13 +171,50 @@ const GenerateOutfit = () => {
           transition={{ delay: 0.4 }}
           className="glass p-8"
         >
-          <h2 className="text-2xl font-semibold mb-6">Generated Outfit</h2>
-          <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center">
-            <p className="text-white/50">Your outfit will appear here</p>
-          </div>
-          <div className="mt-6 space-y-4">
-            <button className="btn-primary w-full">Save Outfit</button>
-            <button className="glass w-full py-3">Try Another</button>
+          <h2 className="text-2xl font-semibold mb-6">Generated Outfits</h2>
+          <div className="space-y-6">
+            <div className="overflow-x-scroll flex space-x-4 py-4">
+              {outfits[currentOutfit].images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Outfit ${currentOutfit + 1} Image ${index + 1}`}
+                  className="rounded-lg w-80 h-80 object-cover"
+                />
+              ))}
+            </div>
+
+            {showStyleDescription ? (
+              <div className="glass p-6 rounded-lg">
+                <p className="typewriter-text text-white/80">{typedText}</p>
+              </div>
+            ) : (
+              <button 
+                className="btn-primary w-full" 
+                onClick={() => setShowStyleDescription(true)}
+              >
+                Show Style Details
+              </button>
+            )}
+
+            <div className="flex justify-between mt-6">
+              <button
+                className="btn-secondary"
+                onClick={() => setCurrentOutfit((prev) => Math.max(prev - 1, 0))}
+                disabled={currentOutfit === 0}
+              >
+                Previous
+              </button>
+              <button
+                className="btn-secondary"
+                onClick={() => setCurrentOutfit((prev) => Math.min(prev + 1, outfits.length - 1))}
+                disabled={currentOutfit === outfits.length - 1}
+              >
+                Next
+              </button>
+            </div>
+
+            <button className="glass w-full py-3 mt-6" onClick={() => alert('Outfit regenerated!')}>Try Another</button>
           </div>
         </motion.div>
       </div>
