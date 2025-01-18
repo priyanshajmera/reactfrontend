@@ -10,6 +10,7 @@ import GenerateOutfit from './pages/GenerateOutfit';
 import OOTD from './pages/OOTD';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Profile from './pages/Profile';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/ootd" element={<OOTD />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
         <Footer />
       </div>
