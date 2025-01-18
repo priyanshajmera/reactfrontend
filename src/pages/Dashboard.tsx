@@ -1,45 +1,50 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Upload, Wand2, Calendar, Sparkles, ChevronRight, ChevronLeft } from 'lucide-react';
+import { createLucideIcon, TrendingUp, Upload, Wand2, Sparkles, ChevronRight, ChevronLeft } from 'lucide-react';
+import { wardrobe } from '@lucide/lab';
 import { Link } from 'react-router-dom';
+
+// Create a React component for the wardrobe icon
+const WardrobeIcon = createLucideIcon('Wardrobe', wardrobe);
 
 const Dashboard = () => {
   const features = [
     {
-      title: 'Generate Outfit',
-      description: 'Create perfect outfit combinations with AI',
-      icon: Wand2,
-      link: '/generate',
-      color: 'purple'
-    },
-    {
       title: 'Add to Wardrobe',
-      description: 'Upload and organize your clothing items',
+      description: 'Add your outfits effortlessly and digitize your wardrobe with just a few clicks.',
       icon: Upload,
       link: '/upload',
       color: 'pink'
     },
     {
-      title: 'Outfit of the Day',
-      description: 'Get daily outfit inspiration',
-      icon: Sparkles,
-      link: '/ootd',
-      color: 'purple'
-    },
-    {
       title: 'My Wardrobe',
-      description: 'Browse and manage your digital closet',
-      icon: Calendar,
+      description: 'Browse and manage your wardrobe by categories.',
+      icon: WardrobeIcon, // Use the custom wardrobe icon
       link: '/wardrobe',
-      color: 'pink'
+      color: 'purple'
     },
     {
-      title: 'Style Analytics',
-      description: 'Track your style preferences and trends',
-      icon: TrendingUp,
-      link: '/analytics',
-      color: 'purple'
+      title: 'Generate Outfit',
+      description: 'Create perfect outfit combinations with AI',
+      icon: Wand2,
+      link: '/generate',
+      color: 'pink'
     }
+    // ,
+    // {
+    //   title: 'Outfit of the Day',
+    //   description: 'Get daily outfit inspiration',
+    //   icon: Sparkles,
+    //   link: '/ootd',
+    //   color: 'purple'
+    // },
+    // {
+    //   title: 'Style Analytics',
+    //   description: 'Track your style preferences and trends',
+    //   icon: TrendingUp,
+    //   link: '/analytics',
+    //   color: 'purple'
+    // }
   ];
 
   const scrollContainerRef = useRef(null);
@@ -73,13 +78,12 @@ const Dashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-12"
       >
-        <h1 className="text-3xl sm:text-4xl font-bold mb-2">Welcome back, Sarah</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">Welcome back, Jodd</h1>
         <p className="text-white/60">Let's create your perfect look for today</p>
       </motion.div>
 
       {/* Feature Cards */}
       <div className="relative">
-        {/* Scroll Arrows */}
         {showArrows.left && (
           <button
             className="absolute left-[-0.25rem] top-1/2 transform -translate-y-1/2 glass bg-neutral-800/70 backdrop-blur-md border border-white/10 p-3 rounded-full z-20 hover:bg-neutral-800/90 transition"
@@ -97,12 +101,8 @@ const Dashboard = () => {
           </button>
         )}
 
-        {/* Scrollable Container */}
-        <div
-          ref={scrollContainerRef}
-          className="overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide"
-        >
-          <div className="flex space-x-6">
+        <div ref={scrollContainerRef} className="overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide">
+          <div className="flex space-x-6 pt-6sm:pt-8 md:pt-10">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -130,10 +130,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Floating elements */}
-      <div className="fixed -z-10 top-1/4 left-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
-      <div className="fixed -z-10 bottom-1/4 right-1/4 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl" />
     </div>
   );
 };
