@@ -67,12 +67,12 @@ const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 + index * 0.2 }}
-            className="gradient-border card-hover"
+            className="gradient-border card-hover flex flex-col h-full"
           >
-            <div className="p-6 sm:p-8">
+            <div className="p-6 sm:p-8 flex-grow flex flex-col items-center">
               <feature.icon className={`w-10 h-10 sm:w-12 sm:h-12 ${feature.color === 'purple' ? 'text-purple-400' : 'text-pink-400'} mb-4`} />
-              <h3 className="text-xl sm:text-2xl font-semibold mb-4">{feature.title}</h3>
-              <p className="text-white/70 text-sm sm:text-base">
+              <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-center">{feature.title}</h3>
+              <p className="text-white/70 text-sm sm:text-base text-center">
                 {feature.description}
               </p>
             </div>
