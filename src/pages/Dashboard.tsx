@@ -1,20 +1,69 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Calendar, Clock, Award, ArrowRight } from 'lucide-react';
+import { TrendingUp, Upload, Wand2, Calendar, Sparkles, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
-  const recentOutfits = [
-    { id: 1, name: 'Casual Friday', date: '2024-03-15', likes: 24 },
-    { id: 2, name: 'Weekend Brunch', date: '2024-03-14', likes: 18 },
-    { id: 3, name: 'Business Meeting', date: '2024-03-13', likes: 32 },
+  const features = [
+    {
+      title: 'Generate Outfit',
+      description: 'Create perfect outfit combinations with AI',
+      icon: Wand2,
+      link: '/generate',
+      color: 'purple'
+    },
+    {
+      title: 'Add to Wardrobe',
+      description: 'Upload and organize your clothing items',
+      icon: Upload,
+      link: '/upload',
+      color: 'pink'
+    },
+    {
+      title: 'Outfit of the Day',
+      description: 'Get daily outfit inspiration',
+      icon: Sparkles,
+      link: '/ootd',
+      color: 'purple'
+    },
+    {
+      title: 'My Wardrobe',
+      description: 'Browse and manage your digital closet',
+      icon: Calendar,
+      link: '/wardrobe',
+      color: 'pink'
+    },
+    {
+      title: 'Style Analytics',
+      description: 'Track your style preferences and trends',
+      icon: TrendingUp,
+      link: '/analytics',
+      color: 'purple'
+    }
   ];
 
-  const upcomingEvents = [
-    { id: 1, name: 'Team Meeting', date: '2024-03-20', type: 'Business' },
-    { id: 2, name: 'Dinner Party', date: '2024-03-22', type: 'Social' },
-    { id: 3, name: 'Weekend Getaway', date: '2024-03-25', type: 'Casual' },
-  ];
+  const scrollContainerRef = useRef(null);
+  const [showArrows, setShowArrows] = useState({ left: false, right: true });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const container = scrollContainerRef.current;
+      setShowArrows({
+        left: container.scrollLeft > 0,
+        right: container.scrollLeft < container.scrollWidth - container.clientWidth
+      });
+    };
+
+    const container = scrollContainerRef.current;
+    container.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollBy = (offset) => {
+    scrollContainerRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+  };
 
   return (
     <div className="page-container pt-24">
@@ -22,99 +71,69 @@ const Dashboard = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-12"
       >
         <h1 className="text-3xl sm:text-4xl font-bold mb-2">Welcome back, Sarah</h1>
         <p className="text-white/60">Let's create your perfect look for today</p>
       </motion.div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[
-          { title: 'Generate Outfit', icon: TrendingUp, link: '/generate', color: 'purple' },
-          { title: 'Add to Wardrobe', icon: Calendar, link: '/upload', color: 'blue' },
-          { title: 'Plan Outfits', icon: Clock, link: '/planner', color: 'pink' },
-          { title: 'Style Stats', icon: Award, link: '/stats', color: 'orange' },
-        ].map((action, index) => (
-          <motion.div
-            key={action.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+      {/* Feature Cards */}
+      <div className="relative">
+        {/* Scroll Arrows */}
+        {showArrows.left && (
+          <button
+            className="absolute left-[-0.25rem] top-1/2 transform -translate-y-1/2 glass bg-neutral-800/70 backdrop-blur-md border border-white/10 p-3 rounded-full z-20 hover:bg-neutral-800/90 transition"
+            onClick={() => scrollBy(-300)}
           >
-            <Link
-              to={action.link}
-              className="category-card h-full flex flex-col justify-between hover:scale-[1.02] transition-all duration-300"
-            >
-              <div>
-                <action.icon className={`w-8 h-8 text-${action.color}-400 mb-4`} />
-                <h3 className="text-lg font-semibold">{action.title}</h3>
-              </div>
-              <ArrowRight className="w-5 h-5 text-white/40 mt-4" />
-            </Link>
-          </motion.div>
-        ))}
-      </div>
+            <ChevronLeft className="text-white w-6 h-6" />
+          </button>
+        )}
+        {showArrows.right && (
+          <button
+            className="absolute right-[-0.25rem] top-1/2 transform -translate-y-1/2 glass bg-neutral-800/70 backdrop-blur-md border border-white/10 p-3 rounded-full z-20 hover:bg-neutral-800/90 transition"
+            onClick={() => scrollBy(300)}
+          >
+            <ChevronRight className="text-white w-6 h-6" />
+          </button>
+        )}
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* Recent Outfits */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="category-card"
+        {/* Scrollable Container */}
+        <div
+          ref={scrollContainerRef}
+          className="overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide"
         >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Recent Outfits</h2>
-            <Link to="/outfits" className="text-purple-400 text-sm hover:text-purple-300">
-              View All
-            </Link>
-          </div>
-          <div className="space-y-4">
-            {recentOutfits.map((outfit) => (
-              <div
-                key={outfit.id}
-                className="glass p-4 flex items-center justify-between"
+          <div className="flex space-x-6">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="w-80 flex-shrink-0"
               >
-                <div>
-                  <h3 className="font-medium">{outfit.name}</h3>
-                  <p className="text-sm text-white/60">{outfit.date}</p>
-                </div>
-                <span className="text-white/80">{outfit.likes} likes</span>
-              </div>
+                <Link
+                  to={feature.link}
+                  className="glass h-full flex flex-col p-6 hover:scale-[1.02] transition-all duration-300"
+                >
+                  <div className={`w-14 h-14 rounded-xl bg-${feature.color}-500/20 flex items-center justify-center mb-6`}>
+                    <feature.icon className={`w-8 h-8 text-${feature.color}-400`} />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                  <p className="text-white/60 mb-6 flex-grow">{feature.description}</p>
+                  <div className="flex items-center text-purple-400 group">
+                    <span className="group-hover:mr-2 transition-all">Explore</span>
+                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
-        </motion.div>
-
-        {/* Upcoming Events */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="category-card"
-        >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Upcoming Events</h2>
-            <Link to="/planner" className="text-purple-400 text-sm hover:text-purple-300">
-              View Calendar
-            </Link>
-          </div>
-          <div className="space-y-4">
-            {upcomingEvents.map((event) => (
-              <div
-                key={event.id}
-                className="glass p-4 flex items-center justify-between"
-              >
-                <div>
-                  <h3 className="font-medium">{event.name}</h3>
-                  <p className="text-sm text-white/60">{event.date}</p>
-                </div>
-                <span className="text-sm px-3 py-1 rounded-full bg-purple-400/20">
-                  {event.type}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+        </div>
       </div>
+
+      {/* Floating elements */}
+      <div className="fixed -z-10 top-1/4 left-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
+      <div className="fixed -z-10 bottom-1/4 right-1/4 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl" />
     </div>
   );
 };
