@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { Heart, Share2, Download } from 'lucide-react';
 

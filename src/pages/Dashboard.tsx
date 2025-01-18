@@ -1,11 +1,20 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { createLucideIcon, TrendingUp, Upload, Wand2, Sparkles, ChevronRight, ChevronLeft } from 'lucide-react';
+import { createLucideIcon, Upload, Wand2, ChevronRight, ChevronLeft } from 'lucide-react';
 import { wardrobe } from '@lucide/lab';
 import { Link } from 'react-router-dom';
+import { Typewriter } from 'react-simple-typewriter';
 
 // Create a React component for the wardrobe icon
 const WardrobeIcon = createLucideIcon('Wardrobe', wardrobe);
+const username = JSON.parse(localStorage.getItem('userInfo')!).username || 'User';
+
+function toProperCase(name) {
+  if (!name) return ''; // Handle empty or undefined input
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+}
+
+const ConvertedUsername = toProperCase(username);
 
 const Dashboard = () => {
   const features = [
@@ -14,48 +23,34 @@ const Dashboard = () => {
       description: 'Add your outfits effortlessly and digitize your wardrobe with just a few clicks.',
       icon: Upload,
       link: '/upload',
-      color: 'pink'
+      color: 'pink',
     },
     {
       title: 'My Wardrobe',
       description: 'Browse and manage your wardrobe by categories.',
-      icon: WardrobeIcon, // Use the custom wardrobe icon
+      icon: WardrobeIcon,
       link: '/wardrobe',
-      color: 'purple'
+      color: 'purple',
     },
     {
       title: 'Generate Outfit',
       description: 'Create perfect outfit combinations with AI',
       icon: Wand2,
       link: '/generate',
-      color: 'pink'
-    }
-    // ,
-    // {
-    //   title: 'Outfit of the Day',
-    //   description: 'Get daily outfit inspiration',
-    //   icon: Sparkles,
-    //   link: '/ootd',
-    //   color: 'purple'
-    // },
-    // {
-    //   title: 'Style Analytics',
-    //   description: 'Track your style preferences and trends',
-    //   icon: TrendingUp,
-    //   link: '/analytics',
-    //   color: 'purple'
-    // }
+      color: 'pink',
+    },
   ];
 
   const scrollContainerRef = useRef(null);
   const [showArrows, setShowArrows] = useState({ left: false, right: true });
+  const [showFinalText, setShowFinalText] = useState(false); // State to control final text display
 
   useEffect(() => {
     const handleScroll = () => {
       const container = scrollContainerRef.current;
       setShowArrows({
         left: container.scrollLeft > 0,
-        right: container.scrollLeft < container.scrollWidth - container.clientWidth
+        right: container.scrollLeft < container.scrollWidth - container.clientWidth,
       });
     };
 
@@ -78,7 +73,21 @@ const Dashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-12"
       >
-        <h1 className="text-3xl sm:text-4xl font-bold mb-2">Welcome back, Jodd</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">
+          Hello,{' '}
+          {!showFinalText ? (
+            <span className="text-purple-400">
+              <Typewriter
+                words={[ConvertedUsername]}
+                cursorStyle="_"
+                typeSpeed={100}
+                deleteSpeed={50}    
+              />
+            </span>
+          ) : (
+            <span className="text-purple-400">{ConvertedUsername}</span>
+          )}
+        </h1>
         <p className="text-white/60">Let's create your perfect look for today</p>
       </motion.div>
 
@@ -102,7 +111,7 @@ const Dashboard = () => {
         )}
 
         <div ref={scrollContainerRef} className="overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide">
-          <div className="flex space-x-6 pt-6sm:pt-8 md:pt-10">
+          <div className="flex space-x-6 pt-6 sm:pt-8 md:pt-10">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}

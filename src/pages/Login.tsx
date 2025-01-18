@@ -1,11 +1,31 @@
-import  { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import apiClient from '../apiclient';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+
+const isTokenValid = (): boolean => {
+  const token = localStorage.getItem('token');
+  if (!token) return false;
+
+  try {
+    const decoded: JwtPayload = jwtDecode(token)!;
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp > currentTime;
+  } catch (error) {
+    return false;
+  }
+};
 
 const Login = () => {
   const navigate=useNavigate();
+
+  useEffect(() => {
+    if (isTokenValid()) {
+      navigate('/dashboard'); // Redirect to dashboard if already logged in
+    }
+  }, [navigate]);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',

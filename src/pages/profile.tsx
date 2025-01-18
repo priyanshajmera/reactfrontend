@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { User, Camera, X, Eye, EyeOff } from 'lucide-react';
+import { Camera, X, Eye, EyeOff } from 'lucide-react';
 
 const Profile = () => {
   const [showPasswordChange, setShowPasswordChange] = useState(false);
@@ -43,7 +43,7 @@ const Profile = () => {
         animate={{ opacity: 1, y: 0 }}
         className="section-title"
       >
-        Profile Settings
+        Your Profile 
       </motion.h1>
 
       <div className="max-w-4xl mx-auto">
