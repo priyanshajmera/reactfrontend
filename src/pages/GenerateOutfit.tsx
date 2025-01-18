@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sun, Cloud, Heart, Briefcase, ShoppingBag, Building, PartyPopper, Thermometer, Umbrella, Snowflake, Shirt, Star, Check, X } from 'lucide-react';
 
 const GenerateOutfit = () => {
+  const [formData, setFormData] = useState({
+    occasion: '',
+    weather: '',
+    style: '',
+    fit: '',
+    timeOfDay: '',
+    layering: false,
+  });
+
+  const handleChange = (field, value) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
   return (
     <div className="page-container pt-24">
       <motion.h1
@@ -29,7 +42,8 @@ const GenerateOutfit = () => {
                 {[{ label: 'Casual', icon: ShoppingBag }, { label: 'Work', icon: Building }, { label: 'Party', icon: PartyPopper }].map(({ label, icon: Icon }) => (
                   <button
                     key={label}
-                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                    onClick={() => handleChange('occasion', label)}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.occasion === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -44,7 +58,8 @@ const GenerateOutfit = () => {
                 {[{ label: 'Hot', icon: Thermometer }, { label: 'Rainy', icon: Umbrella }, { label: 'Cold', icon: Snowflake }].map(({ label, icon: Icon }) => (
                   <button
                     key={label}
-                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                    onClick={() => handleChange('weather', label)}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.weather === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -59,7 +74,8 @@ const GenerateOutfit = () => {
                 {[{ label: 'Classic', icon: Shirt }, { label: 'Minimalistic', icon: Heart }, { label: 'Trendy', icon: Star }].map(({ label, icon: Icon }) => (
                   <button
                     key={label}
-                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                    onClick={() => handleChange('style', label)}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.style === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -74,7 +90,8 @@ const GenerateOutfit = () => {
                 {[{ label: 'Loose', icon: Shirt }, { label: 'Fitted', icon: Heart }, { label: 'Relaxed', icon: ShoppingBag }].map(({ label, icon: Icon }) => (
                   <button
                     key={label}
-                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                    onClick={() => handleChange('fit', label)}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.fit === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -89,7 +106,8 @@ const GenerateOutfit = () => {
                 {[{ label: 'Day', icon: Sun }, { label: 'Night', icon: Cloud }].map(({ label, icon: Icon }) => (
                   <button
                     key={label}
-                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                    onClick={() => handleChange('timeOfDay', label)}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.timeOfDay === label ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -104,7 +122,8 @@ const GenerateOutfit = () => {
                 {[{ label: 'Yes', icon: Check }, { label: 'No', icon: X }].map(({ label, icon: Icon }) => (
                   <button
                     key={label}
-                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                    onClick={() => handleChange('layering', label === 'Yes')}
+                    className={`glass p-4 flex items-center justify-center space-x-2 transition-colors ${formData.layering === (label === 'Yes') ? 'bg-purple-500/20' : ''}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
