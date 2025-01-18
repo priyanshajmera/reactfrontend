@@ -1,6 +1,6 @@
-
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Sun, Cloud, Heart, Briefcase } from 'lucide-react';
+import { Sun, Cloud, Heart, Briefcase, ShoppingBag, Building, PartyPopper, Thermometer, Umbrella, Snowflake, Shirt, Star, Check, X } from 'lucide-react';
 
 const GenerateOutfit = () => {
   return (
@@ -24,14 +24,15 @@ const GenerateOutfit = () => {
           
           <div className="space-y-6">
             <div>
-              <label className="block text-white/80 mb-2">Time of Day</label>
+              <label className="block text-white/80 mb-2">Occasion</label>
               <div className="grid grid-cols-3 gap-4">
-                {['Morning', 'Afternoon', 'Evening'].map((time) => (
+                {[{ label: 'Casual', icon: ShoppingBag }, { label: 'Work', icon: Building }, { label: 'Party', icon: PartyPopper }].map(({ label, icon: Icon }) => (
                   <button
-                    key={time}
-                    className="glass p-3 text-center hover:bg-purple-500/20 transition-colors"
+                    key={label}
+                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
                   >
-                    {time}
+                    <Icon className="w-5 h-5" />
+                    <span>{label}</span>
                   </button>
                 ))}
               </div>
@@ -39,29 +40,76 @@ const GenerateOutfit = () => {
 
             <div>
               <label className="block text-white/80 mb-2">Weather</label>
-              <div className="grid grid-cols-2 gap-4">
-                <button className="glass p-4 flex items-center justify-center space-x-2">
-                  <Sun className="w-5 h-5" />
-                  <span>Sunny</span>
-                </button>
-                <button className="glass p-4 flex items-center justify-center space-x-2">
-                  <Cloud className="w-5 h-5" />
-                  <span>Cloudy</span>
-                </button>
+              <div className="grid grid-cols-3 gap-4">
+                {[{ label: 'Hot', icon: Thermometer }, { label: 'Rainy', icon: Umbrella }, { label: 'Cold', icon: Snowflake }].map(({ label, icon: Icon }) => (
+                  <button
+                    key={label}
+                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{label}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
             <div>
-              <label className="block text-white/80 mb-2">Occasion</label>
+              <label className="block text-white/80 mb-2">Style</label>
+              <div className="grid grid-cols-3 gap-4">
+                {[{ label: 'Classic', icon: Shirt }, { label: 'Minimalistic', icon: Heart }, { label: 'Trendy', icon: Star }].map(({ label, icon: Icon }) => (
+                  <button
+                    key={label}
+                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-white/80 mb-2">Fit</label>
+              <div className="grid grid-cols-3 gap-4">
+                {[{ label: 'Loose', icon: Shirt }, { label: 'Fitted', icon: Heart }, { label: 'Relaxed', icon: ShoppingBag }].map(({ label, icon: Icon }) => (
+                  <button
+                    key={label}
+                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-white/80 mb-2">Time of Day</label>
               <div className="grid grid-cols-2 gap-4">
-                <button className="glass p-4 flex items-center justify-center space-x-2">
-                  <Heart className="w-5 h-5" />
-                  <span>Casual</span>
-                </button>
-                <button className="glass p-4 flex items-center justify-center space-x-2">
-                  <Briefcase className="w-5 h-5" />
-                  <span>Business</span>
-                </button>
+                {[{ label: 'Day', icon: Sun }, { label: 'Night', icon: Cloud }].map(({ label, icon: Icon }) => (
+                  <button
+                    key={label}
+                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-white/80 mb-2">Layering</label>
+              <div className="grid grid-cols-2 gap-4">
+                {[{ label: 'Yes', icon: Check }, { label: 'No', icon: X }].map(({ label, icon: Icon }) => (
+                  <button
+                    key={label}
+                    className="glass p-3 flex items-center justify-center space-x-2 hover:bg-purple-500/20 transition-colors"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{label}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
