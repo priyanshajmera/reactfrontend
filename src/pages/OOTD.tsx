@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Heart, Share2, Download } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Heart, Share2, Download, X, Calendar, Tag } from 'lucide-react';
 
 const OOTD = () => {
   const [isLoading] = useState(true);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [saveForm, setSaveForm] = useState({
+    name: '',
+    occasion: ''
+  });
   const [currentOutfit] = useState({
     name: 'Summer Casual',
     items: [
@@ -41,6 +46,14 @@ const OOTD = () => {
       }
     ]
   });
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle saving logic here
+    setShowSaveDialog(false);
+    // Reset form
+    setSaveForm({ name: '', occasion: '' });
+  };
 
   return (
     <div className="page-container pt-24">
@@ -149,7 +162,12 @@ const OOTD = () => {
             ))}
 
             <div className="space-y-4 pt-4 border-t border-white/10">
-              <button className="btn-primary w-full">Save to Favorites</button>
+              <button 
+                className="btn-primary w-full"
+                onClick={() => setShowSaveDialog(true)}
+              >
+                Save to Favorites
+              </button>
               <button className="glass w-full py-3 hover:bg-white/5 transition-colors">
                 Generate New Outfit
               </button>
@@ -157,6 +175,76 @@ const OOTD = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Save to Favorites Dialog */}
+      <AnimatePresence>
+        {showSaveDialog && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="glass p-6 max-w-md w-full mx-4 relative"
+            >
+              <button
+                onClick={() => setShowSaveDialog(false)}
+                className="absolute top-4 right-4 text-white/60 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <h3 className="text-xl font-semibold mb-6">Save to Favorites</h3>
+              
+              <form onSubmit={handleSave} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-white/80">Collection Name</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g., Summer Party Look"
+                      className="input-glass w-full"
+                      value={saveForm.name}
+                      onChange={(e) => setSaveForm({ ...saveForm, name: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-white/80">Occasion</label>
+                  <select
+                    required
+                    className="input-glass w-full"
+                    value={saveForm.occasion}
+                    onChange={(e) => setSaveForm({ ...saveForm, occasion: e.target.value })}
+                  >
+                    <option value="">Select an occasion</option>
+                    <option value="Casual">Casual</option>
+                    <option value="Formal">Formal</option>
+                    <option value="Business">Business</option>
+                    <option value="Party">Party</option>
+                    <option value="Date Night">Date Night</option>
+                    <option value="Vacation">Vacation</option>
+                  </select>
+                </div>
+
+                <div className="flex justify-end space-x-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowSaveDialog(false)}
+                    className="glass px-4 py-2 hover:bg-white/10 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn-primary">
+                    Save Outfit
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
