@@ -1,59 +1,55 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Share2, Download, X, Calendar, Tag } from 'lucide-react';
+import { Heart, Share2, Download, X } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import apiClient from '../apiclient';
 
 const OOTD = () => {
-  const [isLoading] = useState(true);
+  const [isLoading,setIsLoading] = useState(true);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveForm, setSaveForm] = useState({
     name: '',
     occasion: ''
   });
-  const [currentOutfit] = useState({
-    name: 'Summer Casual',
-    items: [
-      {
-        id: 1,
-        name: 'White Cotton T-Shirt',
-        category: 'Tops',
-        image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&auto=format',
-        brand: 'Essential Wear',
-        color: 'White'
-      },
-      {
-        id: 2,
-        name: 'Distressed Blue Jeans',
-        category: 'Bottoms',
-        image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&auto=format',
-        brand: 'Denim Co',
-        color: 'Light Blue'
-      },
-      {
-        id: 3,
-        name: 'White Sneakers',
-        category: 'Shoes',
-        image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&auto=format',
-        brand: 'UrbanKicks',
-        color: 'White'
-      },
-      {
-        id: 4,
-        name: 'Silver Chain Necklace',
-        category: 'Accessories',
-        image: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=500&auto=format',
-        brand: 'LuxeJewels',
-        color: 'Silver'
-      }
-    ]
-  });
+  const location = useLocation();
+  const { outfit } = location.state || {};
+  const [currentOutfit] = useState(outfit);
+  const [vtonImage, setVtonImage] = useState(null);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = (e) => {
     e.preventDefault();
-    // Handle saving logic here
     setShowSaveDialog(false);
-    // Reset form
     setSaveForm({ name: '', occasion: '' });
   };
+
+  useEffect(() => {
+    // Extract Top and Bottom image URLs
+    const top = currentOutfit.find((item) => item.key === 'Top')?.clothId.image_url;
+    const bottom = currentOutfit.find((item) => item.key === 'Bottom')?.clothId.image_url;
+
+    if (!top || !bottom) {
+      console.error('Missing top or bottom image URL');
+      setIsLoading(false);
+      return;
+    }
+
+    // Fetch VTON image from the backend
+    const fetchVtonImage = async () => {
+      try {
+        const response = await apiClient.post('/virtualtryon', {
+          top,
+          bottom
+        });
+        setVtonImage(response.data.imageUrl); // Update the image URL from response
+      } catch (error) {
+        console.error('Error fetching VTON image:', error);
+      } finally {
+        setIsLoading(false); // Set loading to false after the API call
+      }
+    };
+
+    fetchVtonImage();
+  }, [currentOutfit]);
 
   return (
     <div className="page-container pt-24">
@@ -73,10 +69,10 @@ const OOTD = () => {
           transition={{ delay: 0.2 }}
           className="lg:col-span-2 glass"
         >
-          <div className="aspect-[3/4] rounded-t-lg bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center overflow-hidden">
+           <div className="aspect-[4/5] max-w-[300px] mx-auto sm:max-w-[400px] rounded-t-lg bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center overflow-hidden">
             {isLoading ? (
               <div className="text-center px-4">
-                <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+                <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                 <div className="space-y-3">
                   <motion.p 
                     initial={{ opacity: 0 }}
@@ -98,10 +94,16 @@ const OOTD = () => {
                   </motion.div>
                 </div>
               </div>
-            ) : (
+            ) : vtonImage ? (
               <div className="w-full h-full">
-                {/* VTON result image will be displayed here */}
+                <img
+                  src={vtonImage}
+                  alt="Virtual Try-On"
+                  className="w-full h-full object-cover"
+                />
               </div>
+            ) : (
+              <div className="text-center text-white/70">Failed to load image</div>
             )}
           </div>
           
@@ -135,25 +137,22 @@ const OOTD = () => {
           <h2 className="text-2xl font-semibold mb-6">Outfit Items</h2>
           
           <div className="space-y-6">
-            {currentOutfit.items.map((item) => (
-              <div key={item.id} className="glass hover:bg-white/5 transition-colors">
-                <div className="flex gap-4 p-4">
-                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+            {currentOutfit.map((item) => (
+              <div key={item.clothId.id} className="glass hover:bg-white/5 transition-colors">
+                <div className="flex justify-between gap-4 p-4">
+                  <div className="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
                     <img 
-                      src={item.image} 
-                      alt={item.name}
+                      src={item.clothId.image_url} 
+                      alt={item.key}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="flex-grow">
-                    <h3 className="font-semibold mb-1">{item.name}</h3>
-                    <p className="text-white/70 text-sm mb-1">{item.brand}</p>
+                  <div className="flex flex-col align-top flex-grow">
+                    <h3 className="font-semibold mb-1">{item?.clothId.tags}</h3>
+                    <p className="text-white/70 text-sm mb-1">{item?.clothId.subcategory}</p>
                     <div className="flex items-center gap-2">
                       <span className="text-xs px-2 py-1 rounded-full bg-white/10">
-                        {item.category}
-                      </span>
-                      <span className="text-xs px-2 py-1 rounded-full bg-white/10">
-                        {item.color}
+                        {item?.clothId.category}
                       </span>
                     </div>
                   </div>

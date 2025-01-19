@@ -301,7 +301,7 @@ const GenerateOutfit = () => {
                     {outfits[currentOutfit].items.map((item, index) => (
                       <img
                         key={index}
-                        src={item.clothId}
+                        src={item.clothId.image_url}
                         alt={`Outfit ${currentOutfit + 1} Image ${index + 1}`}
                         className="rounded-lg w-80 h-80 object-cover"
                       />
@@ -333,7 +333,7 @@ const GenerateOutfit = () => {
 
                 <button
                   className="btn-primary w-full"
-                  onClick={()=>navigate('/ootd')}
+                  onClick={()=>navigate('/ootd',{ state: { outfit: outfits[currentOutfit].items } } )}
                 >
                   Virtual try on
                 </button>
