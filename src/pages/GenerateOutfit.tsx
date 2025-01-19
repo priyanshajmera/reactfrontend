@@ -1,8 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Sun, Cloud, Heart, ShoppingBag, Building, PartyPopper, Thermometer, Umbrella, Snowflake, Shirt, Star, Check, X } from 'lucide-react';
+import {
+  Sun,
+  Cloud,
+  Heart,
+  ShoppingBag,
+  Building,
+  PartyPopper,
+  Thermometer,
+  Umbrella,
+  Snowflake,
+  Shirt,
+  Star,
+  Check,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
+import apiClient from '../apiclient';
+import { useNavigate } from 'react-router-dom';
 
 const GenerateOutfit = () => {
+  const navigate=useNavigate();
   const [formData, setFormData] = useState({
     occasion: '',
     weather: '',
@@ -12,11 +31,17 @@ const GenerateOutfit = () => {
     layering: false,
   });
 
-  const [outfits, setOutfits] = useState([]);
+  const [outfits, setOutfits] = useState<{ option: string; items: [] }[]>([]);
   const [currentOutfit, setCurrentOutfit] = useState(0);
   const [showStyleDescription, setShowStyleDescription] = useState(false);
   const [generateClicked, setGenerateClicked] = useState(false);
   const [typewriterText, setTypewriterText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (showStyleDescription) {
@@ -34,36 +59,50 @@ const GenerateOutfit = () => {
   }, [showStyleDescription, currentOutfit]);
 
   const handleChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+    // Allow toggling (uncheck functionality)
+    setFormData((prev) => ({
+      ...prev,
+      [field]: prev[field] === value ? '' : value,
+    }));
+  };
+
+  const transformFormData = () => {
+    const transformedData = [
+      { id: 0, category: 'Occasion', tag: formData.occasion },
+      { id: 1, category: 'Weather', tag: formData.weather },
+      { id: 3, category: 'Body Fit', tag: formData.fit },
+      { id: 4, category: 'Time of Day', tag: formData.timeOfDay },
+      { id: 5, category: 'Layering with other clothes?', tag: formData.layering ? 'Yes' : 'No' },
+    ];
+    return transformedData;
   };
 
   const handleGenerateOutfit = async () => {
     setGenerateClicked(true);
-    setShowStyleDescription(false); // Reset style details visibility
-    setCurrentOutfit(0); // Reset to the first outfit on regeneration
+    setShowStyleDescription(false);
+    setCurrentOutfit(0);
+    if (outfits.length) {
+      setOutfits([]);
+    }
+    setLoading(true);
+    setError('');
+    try {
+      const requestPayload = transformFormData();
+      const response = await apiClient.post('/ootd', requestPayload);
 
-    // Simulate fetching data from the backend
-    const fetchedOutfits = [
-      {
-        id: 1,
-        images: [
-          "https://via.placeholder.com/400/0000FF/FFFFFF?text=Outfit+1+Pic+1",
-          "https://via.placeholder.com/400/FF0000/FFFFFF?text=Outfit+1+Pic+2",
-        ],
-        styleDescription: "This outfit combines trendy and minimalistic elements for a stylish yet comfortable look.",
-      },
-      {
-        id: 2,
-        images: [
-          "https://via.placeholder.com/400/FF00FF/FFFFFF?text=Outfit+2+Pic+1",
-          "https://via.placeholder.com/400/FFFF00/FFFFFF?text=Outfit+2+Pic+2",
-        ],
-        styleDescription: "A classic outfit designed for both elegance and versatility.",
-      },
-    ];
-    setTimeout(() => {
-      setOutfits(fetchedOutfits);
-    }, 1000); // Simulate network delay
+      const responseData = response.data;
+      const parsedOutfits = Object.keys(responseData).map((key) => ({
+        option: key,
+        items: responseData[key],
+      }));
+
+      setOutfits(parsedOutfits);
+      setCurrentOutfit(0);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to fetch outfits');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleShowStyleDetails = () => {
@@ -72,13 +111,51 @@ const GenerateOutfit = () => {
 
   const handleNextOutfit = () => {
     setCurrentOutfit((prev) => Math.min(prev + 1, outfits.length - 1));
-    setShowStyleDescription(false); // Reset style details visibility
+    setShowStyleDescription(false);
   };
 
   const handlePreviousOutfit = () => {
     setCurrentOutfit((prev) => Math.max(prev - 1, 0));
-    setShowStyleDescription(false); // Reset style details visibility
+    setShowStyleDescription(false);
   };
+
+  const scrollOutfits = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = scrollRef.current.offsetWidth;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  const updateScrollState = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, offsetWidth } = scrollRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft + offsetWidth < scrollWidth);
+    }
+  };
+
+  useEffect(() => {
+    updateScrollState();
+
+    const handleResize = () => updateScrollState();
+    const scrollableContainer = scrollRef.current;
+
+    if (scrollableContainer) {
+      scrollableContainer.addEventListener('scroll', updateScrollState);
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      if (scrollableContainer) {
+        scrollableContainer.removeEventListener('scroll', updateScrollState);
+      }
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [outfits]);
 
   return (
     <div className="page-container pt-24">
@@ -207,15 +284,38 @@ const GenerateOutfit = () => {
           {generateClicked ? (
             outfits.length > 0 ? (
               <div className="space-y-6">
-                <div className="overflow-x-scroll flex space-x-4 py-4">
-                  {outfits[currentOutfit].images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`Outfit ${currentOutfit + 1} Image ${index + 1}`}
-                      className="rounded-lg w-80 h-80 object-cover"
-                    />
-                  ))}
+                <div className="relative">
+                  {canScrollLeft && (
+                    <button
+                      className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black/50 p-2 rounded-full"
+                      onClick={() => scrollOutfits('left')}
+                    >
+                      <ChevronLeft className="w-5 h-5 text-white" />
+                    </button>
+                  )}
+
+                  <div
+                    ref={scrollRef}
+                    className="flex overflow-hidden space-x-4 py-4"
+                  >
+                    {outfits[currentOutfit].items.map((item, index) => (
+                      <img
+                        key={index}
+                        src={item.clothId}
+                        alt={`Outfit ${currentOutfit + 1} Image ${index + 1}`}
+                        className="rounded-lg w-80 h-80 object-cover"
+                      />
+                    ))}
+                  </div>
+
+                  {canScrollRight && (
+                    <button
+                      className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black/50 p-2 rounded-full"
+                      onClick={() => scrollOutfits('right')}
+                    >
+                      <ChevronRight className="w-5 h-5 text-white" />
+                    </button>
+                  )}
                 </div>
 
                 {showStyleDescription ? (
@@ -231,9 +331,17 @@ const GenerateOutfit = () => {
                   </button>
                 )}
 
+                <button
+                  className="btn-primary w-full"
+                  onClick={()=>navigate('/ootd')}
+                >
+                  Virtual try on
+                </button>
+
+
                 <div className="flex justify-between mt-6">
                   <button
-                    className="btn-secondary"
+                    className="btn-secondary disabled:opacity-0"
                     onClick={handlePreviousOutfit}
                     disabled={currentOutfit === 0}
                   >
@@ -242,14 +350,18 @@ const GenerateOutfit = () => {
                   <button
                     className="btn-secondary"
                     onClick={handleNextOutfit}
-                    disabled={currentOutfit === outfits.length - 1}
+                    hidden={currentOutfit === outfits.length - 1}
                   >
                     Next
                   </button>
                 </div>
+
+
               </div>
             ) : (
-              <p className="text-white/50">Loading your outfits... Please wait!</p>
+              <div className="flex justify-center items-center h-full">
+                <div className="spinner border-t-purple-500"></div>
+              </div>
             )
           ) : (
             <div className="flex flex-col items-center justify-center h-full">

@@ -13,7 +13,7 @@ const Footer = () => {
           <div className="space-y-4">
             <Link to="/" className="flex items-center space-x-2 group">
               <Sparkles className="w-6 h-6 text-purple-400" />
-              <span className="text-xl font-bold text-white">LuxeStyle AI</span>
+              <span className="text-xl font-bold text-white">Slayrs</span>
             </Link>
             <p className="text-white/60 text-sm">
               Revolutionizing personal style with AI-powered fashion recommendations.
