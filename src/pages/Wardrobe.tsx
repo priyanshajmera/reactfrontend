@@ -17,7 +17,7 @@ interface WardrobeItem {
 
 const Wardrobe = () => {
   const navigate = useNavigate();
-  const categories = ['All', 'Tops', 'Bottom', 'Dress', 'Shoes', 'Accessories'];
+  const categories = ['All', 'Tops', 'Bottom', 'Dresses', 'Shoes', 'Accessories'];
   const [wardrobe, setWardrobe] = useState<WardrobeItem[]>([]); // Stores all wardrobe items fetched from the API
   const [filteredWardrobe, setFilteredWardrobe] = useState<WardrobeItem[]>([]); // Stores items filtered by category
   const [selectedCategory, setSelectedCategory] = useState('All'); // Current selected category
