@@ -40,7 +40,7 @@ const OOTD = () => {
           top,
           bottom
         });
-        setVtonImage(response.data.imageUrl); // Update the image URL from response
+        setVtonImage(response.data.output); // Update the image URL from response
       } catch (error) {
         console.error('Error fetching VTON image:', error);
       } finally {
