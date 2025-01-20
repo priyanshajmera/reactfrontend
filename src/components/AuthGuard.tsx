@@ -1,11 +1,15 @@
 import React, { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
+import { logout } from '../utils/logout';
+
 
 // Define the structure of the decoded JWT payload
 interface JwtPayload {
   exp: number; // Expiration timestamp in seconds
 }
+
+
 
 // Utility function to check if the token is valid
 const isTokenValid = (): boolean => {
@@ -29,10 +33,12 @@ interface AuthGuardProps {
 // AuthGuard Component
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const isLoggedIn = isTokenValid();
+  const navigate = useNavigate();
 
   if (!isLoggedIn) {
     // Redirect unauthenticated users to login page
-    return <Navigate to="/login" replace />;
+    logout(navigate)
+    
   }
 
   return <>{children}</>; // Render children for authenticated users

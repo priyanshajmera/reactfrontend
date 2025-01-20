@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import apiClient from '../apiclient';
 
 const OOTD = () => {
-  const [isLoading,setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveForm, setSaveForm] = useState({
     name: '',
@@ -69,12 +69,12 @@ const OOTD = () => {
           transition={{ delay: 0.2 }}
           className="lg:col-span-2 glass"
         >
-           <div className="aspect-[4/5] max-w-[300px] mx-auto sm:max-w-[400px] rounded-t-lg bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center overflow-hidden">
+          <div className="aspect-[4/5] max-w-[300px] mx-auto sm:max-w-[400px] rounded-t-lg bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center overflow-hidden">
             {isLoading ? (
               <div className="text-center px-4">
                 <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                 <div className="space-y-3">
-                  <motion.p 
+                  <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
@@ -97,7 +97,7 @@ const OOTD = () => {
             ) : vtonImage ? (
               <div className="w-full h-full">
                 <img
-                  src={vtonImage}
+                  src={`data:image/jpeg;base64,${vtonImage}`}
                   alt="Virtual Try-On"
                   className="w-full h-full object-cover"
                 />
@@ -106,7 +106,7 @@ const OOTD = () => {
               <div className="text-center text-white/70">Failed to load image</div>
             )}
           </div>
-          
+
           <div className="p-6 border-t border-white/10">
             <div className="flex justify-between items-center">
               <div className="flex space-x-4">
@@ -135,14 +135,14 @@ const OOTD = () => {
           className="glass p-6"
         >
           <h2 className="text-2xl font-semibold mb-6">Outfit Items</h2>
-          
+
           <div className="space-y-6">
             {currentOutfit.map((item) => (
               <div key={item.clothId.id} className="glass hover:bg-white/5 transition-colors">
                 <div className="flex justify-between gap-4 p-4">
                   <div className="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
-                    <img 
-                      src={item.clothId.image_url} 
+                    <img
+                      src={item.clothId.image_url}
                       alt={item.key}
                       className="w-full h-full object-cover"
                     />
@@ -161,7 +161,7 @@ const OOTD = () => {
             ))}
 
             <div className="space-y-4 pt-4 border-t border-white/10">
-              <button 
+              <button
                 className="btn-primary w-full"
                 onClick={() => setShowSaveDialog(true)}
               >
@@ -193,7 +193,7 @@ const OOTD = () => {
               </button>
 
               <h3 className="text-xl font-semibold mb-6">Save to Favorites</h3>
-              
+
               <form onSubmit={handleSave} className="space-y-6">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-white/80">Collection Name</label>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, User, ChevronDown, LogOut, Sparkles } from 'lucide-react';
 import {jwtDecode} from 'jwt-decode'; // Install this library using npm install jwt-decode
+import { logout } from '../utils/logout';
 
 const Navbar = () => {
   const location = useLocation();
@@ -41,10 +42,7 @@ const Navbar = () => {
 
   // Handle logout
   const handleLogout = () => {
-    localStorage.clear(); // Remove the token from localStorage
-    setLoggedIn(false); // Update the state
-    setIsProfileOpen(false); // Close the profile menu
-    navigate('/login'); // Redirect to the login page
+    logout(navigate, setLoggedIn);
   };
 
   return (
