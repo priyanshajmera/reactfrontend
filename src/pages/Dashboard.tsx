@@ -7,7 +7,7 @@ import { Typewriter } from 'react-simple-typewriter';
 
 // Create a React component for the wardrobe icon
 const WardrobeIcon = createLucideIcon('Wardrobe', wardrobe);
-const username = JSON.parse(localStorage.getItem('userInfo')!).username || 'User';
+const username = JSON.parse(localStorage.getItem('userInfo')!)?.username || 'User';
 
 function toProperCase(name) {
   if (!name) return ''; // Handle empty or undefined input
@@ -81,7 +81,7 @@ const Dashboard = () => {
                 words={[ConvertedUsername]}
                 cursorStyle="_"
                 typeSpeed={100}
-                deleteSpeed={50}    
+                deleteSpeed={50}
               />
             </span>
           ) : (

@@ -41,7 +41,7 @@ const Navbar = () => {
 
   // Handle logout
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove the token from localStorage
+    localStorage.clear(); // Remove the token from localStorage
     setLoggedIn(false); // Update the state
     setIsProfileOpen(false); // Close the profile menu
     navigate('/login'); // Redirect to the login page
