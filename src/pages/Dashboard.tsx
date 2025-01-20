@@ -43,23 +43,35 @@ const Dashboard = () => {
 
   const scrollContainerRef = useRef(null);
   const [showArrows, setShowArrows] = useState({ left: false, right: true });
-  const [showFinalText, setShowFinalText] = useState(false); // State to control final text display
+  const [showFinalText, setShowFinalText] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const container = scrollContainerRef.current;
-      setShowArrows({
-        left: container.scrollLeft > 0,
-        right: container.scrollLeft < container.scrollWidth - container.clientWidth,
-      });
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
     };
 
-    const container = scrollContainerRef.current;
-    container.addEventListener('scroll', handleScroll);
-    handleScroll();
-
-    return () => container.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    if (!isMobile) {
+      const handleScroll = () => {
+        const container = scrollContainerRef.current;
+        setShowArrows({
+          left: container.scrollLeft > 0,
+          right: container.scrollLeft < container.scrollWidth - container.clientWidth,
+        });
+      };
+
+      const container = scrollContainerRef.current;
+      container.addEventListener('scroll', handleScroll);
+      handleScroll();
+
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, [isMobile]);
 
   const scrollBy = (offset) => {
     scrollContainerRef.current.scrollBy({ left: offset, behavior: 'smooth' });
@@ -93,7 +105,7 @@ const Dashboard = () => {
 
       {/* Feature Cards */}
       <div className="relative">
-        {showArrows.left && (
+        {!isMobile && showArrows.left && (
           <button
             className="absolute left-[-0.25rem] top-1/2 transform -translate-y-1/2 glass bg-neutral-800/70 backdrop-blur-md border border-white/10 p-3 rounded-full z-20 hover:bg-neutral-800/90 transition"
             onClick={() => scrollBy(-300)}
@@ -101,7 +113,7 @@ const Dashboard = () => {
             <ChevronLeft className="text-white w-6 h-6" />
           </button>
         )}
-        {showArrows.right && (
+        {!isMobile && showArrows.right && (
           <button
             className="absolute right-[-0.25rem] top-1/2 transform -translate-y-1/2 glass bg-neutral-800/70 backdrop-blur-md border border-white/10 p-3 rounded-full z-20 hover:bg-neutral-800/90 transition"
             onClick={() => scrollBy(300)}
@@ -110,15 +122,18 @@ const Dashboard = () => {
           </button>
         )}
 
-        <div ref={scrollContainerRef} className="overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide">
-          <div className="flex space-x-6 pt-6 sm:pt-8 md:pt-10">
+        <div 
+          ref={scrollContainerRef} 
+          className={`${isMobile ? 'flex flex-col space-y-4' : 'overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide'}`}
+        >
+          <div className={`${isMobile ? 'space-y-4' : 'flex space-x-6 pt-6 sm:pt-8 md:pt-10'}`}>
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="w-80 flex-shrink-0"
+                className={`${isMobile ? 'w-full' : 'w-80 flex-shrink-0'}`}
               >
                 <Link
                   to={feature.link}

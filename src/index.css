@@ -1,6 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Prevent horizontal scrolling */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
 @layer utilities {
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -10,6 +18,7 @@
     display: none;
   }
 }
+
 @layer base {
   body {
     @apply bg-gradient-to-br from-neutral-900 to-neutral-800 text-white min-h-screen;
@@ -94,7 +103,6 @@
            hover:bg-purple-500/20 transition-colors;
   }
 }
-
 .spinner {
   width: 50px;
   height: 50px;
