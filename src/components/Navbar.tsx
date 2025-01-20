@@ -1,58 +1,62 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, User, ChevronDown, LogOut, Sparkles } from 'lucide-react';
-import {jwtDecode} from 'jwt-decode'; // Install this library using npm install jwt-decode
+import { Home, User, ChevronDown, LogOut, Sparkles, Menu } from 'lucide-react';
+import { jwtDecode } from 'jwt-decode';
 import { logout } from '../utils/logout';
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
-  // State to check if user is logged in
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // Check if the current route is home, dashboard, login, or signup
   const isHomePage = location.pathname === '/';
   const isDashboardPage = location.pathname === '/dashboard';
   const isLoginPage = location.pathname === '/login';
   const isSignUpPage = location.pathname === '/signup';
 
-  // Function to check token validity
   const isTokenValid = (token: string) => {
     try {
-      const decoded: { exp: number } = jwtDecode(token); // Decode the token to get the expiration time
-      const currentTime = Math.floor(Date.now() / 1000); // Get the current time in seconds
-      return decoded.exp > currentTime; // Return true if the token is not expired
+      const decoded: { exp: number } = jwtDecode(token);
+      const currentTime = Math.floor(Date.now() / 1000);
+      return decoded.exp > currentTime;
     } catch (error) {
-      return false; // If decoding fails, treat the token as invalid
+      return false;
     }
   };
 
-  // Check for JWT token and handle expiration
   useEffect(() => {
-    const token = localStorage.getItem('token'); // Replace 'jwtToken' with your token key
+    const token = localStorage.getItem('token');
     if (token && isTokenValid(token)) {
-      setLoggedIn(true); // Token is valid, user is logged in
+      setLoggedIn(true);
     } else {
-      localStorage.removeItem('token'); // Token is invalid or expired, remove it
-      setLoggedIn(false); // Set loggedIn to false
+      localStorage.removeItem('token');
+      setLoggedIn(false);
     }
-  }, [location.pathname]); // Recheck token validity when the location changes
+  }, [location.pathname]);
 
-  // Handle logout
   const handleLogout = () => {
     logout(navigate, setLoggedIn);
+    setIsMobileMenuOpen(false);
   };
 
   return (
     <nav className="fixed w-full z-50 bg-neutral-900/95 backdrop-blur-md border-b border-white/10">
       <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
+        <div className="flex items-center justify-between md:justify-between">
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 text-white hover:text-purple-400"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+
+          {/* Logo - Centered on mobile */}
           <Link
             to="/"
-            className="flex items-center space-x-2 group text-white hover:text-purple-400 transition-colors"
+            className="flex items-center space-x-2 group text-white hover:text-purple-400 transition-colors absolute left-1/2 -translate-x-1/2 md:static md:transform-none"
           >
             <Sparkles className="w-6 h-6 text-purple-400 transition-transform duration-300 group-hover:scale-110" />
             <span className="text-lg font-bold">Slayrs</span>
@@ -64,14 +68,14 @@ const Navbar = () => {
             {!isHomePage && !isDashboardPage && !isLoginPage && !isSignUpPage && (
               <Link
                 to="/dashboard"
-                className="flex items-center space-x-1 group text-white hover:text-purple-400 transition-colors"
+                className="hidden md:flex items-center space-x-1 group text-white hover:text-purple-400 transition-colors"
               >
                 <Home className="w-6 h-6" />
-                <span className="text-lg"> Home</span>
+                <span className="text-lg">Home</span>
               </Link>
             )}
 
-            {/* Conditional Sign In Button for Home Page */}
+            {/* Sign In Button or Profile Menu */}
             {isHomePage && !loggedIn ? (
               <Link
                 to="/login"
@@ -81,7 +85,6 @@ const Navbar = () => {
               </Link>
             ) : (
               loggedIn && (
-                /* Profile Menu */
                 <div className="relative">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -92,7 +95,6 @@ const Navbar = () => {
                     <ChevronDown className="w-4 h-4" />
                   </button>
 
-                  {/* Profile Dropdown */}
                   {isProfileOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-neutral-900/95 shadow-lg rounded-lg border border-white/10">
                       <Link
@@ -117,6 +119,43 @@ const Navbar = () => {
             )}
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden mt-4 py-4 border-t border-white/10">
+            <div className="flex flex-col space-y-4">
+              {!isHomePage && !isDashboardPage && !isLoginPage && !isSignUpPage && (
+                <Link
+                  to="/dashboard"
+                  className="flex items-center space-x-2 text-white hover:text-purple-400 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Home className="w-6 h-6" />
+                  <span>Home</span>
+                </Link>
+              )}
+              {loggedIn && (
+                <>
+                  <Link
+                    to="/profile"
+                    className="flex items-center space-x-2 text-white hover:text-purple-400 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <User className="w-6 h-6" />
+                    <span>Profile</span>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 text-white hover:text-purple-400 transition-colors"
+                  >
+                    <LogOut className="w-6 h-6" />
+                    <span>Logout</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
