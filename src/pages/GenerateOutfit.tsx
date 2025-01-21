@@ -19,9 +19,10 @@ import {
 } from 'lucide-react';
 import apiClient from '../apiclient';
 import { useNavigate } from 'react-router-dom';
+import { Typewriter } from 'react-simple-typewriter';
 
 const GenerateOutfit = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     occasion: '',
     weather: '',
@@ -41,20 +42,23 @@ const GenerateOutfit = () => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (showStyleDescription) {
-      const text = outfits[currentOutfit]?.styleDescription || "";
-      let index = 0;
-      const interval = setInterval(() => {
-        setTypewriterText((prev) => prev + text[index]);
-        index++;
-        if (index === text.length) clearInterval(interval);
-      }, 50);
-      return () => clearInterval(interval);
+      const suggestionItem = outfits[currentOutfit]?.items.find(item => item.key === "suggestions");
+      const suggestion = suggestionItem ? suggestionItem.suggestion : "";
+      const text = suggestion
+        .split('.')
+        .map(sentence => sentence.trim())
+        .filter(sentence => sentence)
+        .map(sentence => `- ${sentence}`)
+        .join('\n');
+      setTypewriterText(text);
     } else {
-      setTypewriterText(""); // Reset typewriter text
+      setTypewriterText(""); // Reset typewriter text when not showing
     }
   }, [showStyleDescription, currentOutfit]);
 
@@ -97,6 +101,7 @@ const GenerateOutfit = () => {
       }));
 
       setOutfits(parsedOutfits);
+      console.log('outfits', outfits[currentOutfit].items);
       setCurrentOutfit(0);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch outfits');
@@ -298,13 +303,15 @@ const GenerateOutfit = () => {
                     ref={scrollRef}
                     className="flex overflow-hidden space-x-4 py-4"
                   >
-                    {outfits[currentOutfit].items.map((item, index) => (
-                      <img
-                        key={index}
-                        src={item.clothId.image_url}
-                        alt={`Outfit ${currentOutfit + 1} Image ${index + 1}`}
-                        className="rounded-lg w-80 h-80 object-cover"
-                      />
+                    {outfits[currentOutfit].items.map((item: any, index) => (
+                      item.clothId?.image_url ? (
+                        <img
+                          key={index}
+                          src={item.clothId.image_url}
+                          alt={`Outfit ${currentOutfit + 1} Image ${index + 1}`}
+                          className="rounded-lg w-80 h-80 object-cover"
+                        />
+                      ) : null
                     ))}
                   </div>
 
@@ -320,7 +327,14 @@ const GenerateOutfit = () => {
 
                 {showStyleDescription ? (
                   <div className="glass p-6 rounded-lg">
-                    <p className="text-white/80">{typewriterText}</p>
+                    <div className="reveal-container">
+                      {typewriterText &&
+                        typewriterText.split('\n').map((line, index) => (
+                          <div key={index} className="reveal-line" style={{ animationDelay: `${index * 0.3}s` }}>
+                            {line}
+                          </div>
+                        ))}
+                    </div>
                   </div>
                 ) : (
                   <button
@@ -333,7 +347,7 @@ const GenerateOutfit = () => {
 
                 <button
                   className="btn-primary w-full"
-                  onClick={()=>navigate('/ootd',{ state: { outfit: outfits[currentOutfit].items } } )}
+                  onClick={() => navigate('/ootd', { state: { outfit: outfits[currentOutfit].items } })}
                 >
                   Virtual try on
                 </button>

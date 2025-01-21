@@ -18,7 +18,7 @@ const Upload = () => {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    const storedGender = (JSON.parse(localStorage.getItem('userInfo')!).gender as 'male' | 'female') || 'male'; // Default to male
+    const storedGender = (JSON.parse(localStorage.getItem('userInfo')!)?.gender as 'male' | 'female') || 'male'; // Default to male
     setGender(storedGender);
     setCategories(getCategoriesByGender(storedGender));
   }, []);

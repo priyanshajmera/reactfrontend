@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Upload, Palette, Wand2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate=useNavigate();
   return (
     <div className="page-container pt-24">
       <motion.div
@@ -86,7 +88,8 @@ const Home = () => {
         transition={{ delay: 0.8 }}
         className="mt-8 sm:mt-16 text-center px-4"
       >
-        <button className="btn-primary px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg w-full sm:w-auto">
+        <button className="btn-primary px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg w-full sm:w-auto" onClick={()=>navigate('/dashboard')}>
+         
           Start Your Style Journey
         </button>
       </motion.div>
