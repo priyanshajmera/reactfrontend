@@ -24,8 +24,8 @@ const OOTD = () => {
 
   useEffect(() => {
     // Extract Top and Bottom image URLs
-    const top = currentOutfit.find((item) => item.key === 'Top')?.clothId.image_url;
-    const bottom = currentOutfit.find((item) => item.key === 'Bottom')?.clothId.image_url;
+    const top = currentOutfit?.find((item) => item.key === 'Top')?.clothId.image_url;
+    const bottom = currentOutfit?.find((item) => item.key === 'Bottom')?.clothId.image_url;
 
     if (!top || !bottom) {
       console.error('Missing top or bottom image URL');
@@ -137,7 +137,7 @@ const OOTD = () => {
           <h2 className="text-2xl font-semibold mb-6">Outfit Items</h2>
 
           <div className="space-y-6">
-            {currentOutfit.map((item) => (
+            {currentOutfit?.map((item) => (
               <div key={item.clothId.id} className="glass hover:bg-white/5 transition-colors">
                 <div className="flex justify-between gap-4 p-4">
                   <div className="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">

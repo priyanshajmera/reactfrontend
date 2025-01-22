@@ -43,9 +43,6 @@ const Login = () => {
 
       localStorage.setItem('token', token);
       localStorage.setItem('userInfo',JSON.stringify(userDataToSend));
-      
-
-      
       navigate('/dashboard'); // Redirect to the dashboard
     } catch (err:any) {
       console.error('Login error:', err);
@@ -68,7 +65,7 @@ const Login = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-white/80">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 z-10 text-purple-400" />
                 <input
                   type="email"
                   required
@@ -83,7 +80,7 @@ const Login = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-white/80">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 z-10 text-purple-400" />
                 <input
                   type={showPassword ? "text" : "password"}
                   required
@@ -95,7 +92,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-10 text-purple-400 hover:text-white"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>

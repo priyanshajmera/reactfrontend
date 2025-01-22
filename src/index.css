@@ -151,3 +151,103 @@ html, body {
     transform: translateY(0);
   }
 }
+
+.react-datepicker {
+  background-color: #2d3748; /* Dark background */
+  color: #f7fafc; /* Light text color */
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  
+  
+}
+
+.react-datepicker__header {
+  background-color: #4a5568; /* Dark header */
+  border-bottom: 1px solid #2d3748;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: #f7fafc; /* Light text */
+}
+
+.react-datepicker__day {
+  color: #e2e8f0; /* Light text for days */
+}
+
+.react-datepicker__day:hover,
+.react-datepicker__day--keyboard-selected {
+  background-color: #6b46c1; /* Highlighted background */
+  color: #fff;
+}
+
+.react-datepicker__day--selected {
+  background-color: #9f7aea; /* Selected day background */
+  color: #fff;
+}
+
+.react-datepicker__navigation {
+  background: none;
+}
+
+.react-datepicker__navigation--previous {
+  border-right-color: #f7fafc;
+}
+
+.react-datepicker__navigation--next {
+  border-left-color: #f7fafc;
+}
+.react-datepicker__day--disabled{
+  color: #a0aec0 !important; /* Gray color for disabled dates */
+  background-color: #2d3748; /* Match dark mode background */
+  pointer-events: none; /* Disable interactions */
+}
+
+.dark-datepicker .react-datepicker__triangle {
+  display: none; /* Removes triangle */
+}
+.disabled-day {
+  color: #a0aec0; /* Gray color for disabled dates */
+  background-color: #2d3748; /* Match dark mode background */
+  pointer-events: none; /* Disable interactions */
+}
+
+/* Year Dropdown Styling */
+.react-datepicker__year-dropdown {
+  background-color: #2d3748; /* Dark background */
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  color: #f7fafc; /* Light text color */
+  padding: 4px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.react-datepicker__year-dropdown--scrollable {
+  max-height: 200px; /* Optional: Limit height for scrollable dropdown */
+  overflow-y: auto;
+}
+
+.react-datepicker__year-option {
+  background-color: #2d3748; /* Dark background */
+  color: #e2e8f0; /* Light text */
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.react-datepicker__year-option:hover {
+  background-color: #6b46c1; /* Highlight background */
+  color: #fff; /* Highlight text */
+}
+
+.react-datepicker__year-option--selected {
+  background-color: #9f7aea; /* Selected background */
+  color: #fff; /* Selected text */
+  font-weight: bold;
+}
+
+/* Triangle for dropdown (optional, already hidden in your styles) */
+.dark-datepicker .react-datepicker__triangle {
+  display: none; /* Removes triangle */
+}
+
+

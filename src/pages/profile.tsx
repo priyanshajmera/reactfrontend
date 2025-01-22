@@ -1,6 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, X, Eye, EyeOff } from 'lucide-react';
+import apiClient from '../apiclient';
+import Swal from 'sweetalert2';
+import { error } from 'console';
+import DatePicker from 'react-datepicker';
 
 const Profile = () => {
   const [showPasswordChange, setShowPasswordChange] = useState(false);
@@ -8,15 +12,73 @@ const Profile = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
-    username: 'Sarah Johnson',
-    email: 'sarah.johnson@example.com',
-    phone: '+1 (555) 123-4567',
-    dob: '1990-06-15',
-    gender: 'female',
+    username: '',
+    email: '',
+    phone: '',
+    dob: null as Date | null,
+    gender: '',
+    profileimageurl: '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
+
+  const formatDateForInput = (utcDate) => {
+    const date = new Date(utcDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await apiClient.get(`/profile`); // Replace with your API endpoint
+        setFormData({ ...response.data, dob: formatDateForInput(response.data.dob) });
+        setProfileImage(response.data.profileimageurl);
+
+      } catch (error) {
+        console.error('Error fetching cloth details:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const handleSaveChanges = async () => {
+    try {
+      const resp = await apiClient.put('profile', { ...formData, profileimageurl: profileImage });
+      console.log('resp', resp);
+      console.log('status', resp.status);
+      if (resp.status === 200 && resp.data) {
+        setFormData({ ...resp.data.user, dob: formatDateForInput(resp.data.user.dob) });
+        setProfileImage(resp.data.user.profileimageurl);
+        Swal.fire({
+          title: 'Saved!',
+          text: 'Your profile has been saved.',
+          icon: 'success',
+          confirmButtonColor: '#A855F7', // Same primary color
+          background: '#1F2937',
+          color: '#FFFFFF',
+        });
+      }
+      else {
+        throw new Error('Unexpected response structure or status');
+      }
+    }
+    catch (error) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'An error occurred while saving the profile.',
+        icon: 'error',
+        confirmButtonColor: '#A855F7', // Same primary color
+        background: '#1F2937',
+        color: '#FFFFFF',
+      });
+    }
+  };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -43,7 +105,7 @@ const Profile = () => {
         animate={{ opacity: 1, y: 0 }}
         className="section-title"
       >
-        Your Profile 
+        Your Profile
       </motion.h1>
 
       <div className="max-w-4xl mx-auto">
@@ -76,7 +138,7 @@ const Profile = () => {
                     onClick={() => fileInputRef.current?.click()}
                     className="w-full aspect-square rounded-lg bg-neutral-800 flex items-center justify-center cursor-pointer hover:bg-neutral-700 transition-colors group"
                   >
-                    <Camera className="w-12 h-12 text-white/50 group-hover:text-white/80 transition-colors" />
+                    <Camera className="w-12 h-12 z-10 text-purple-400 group-hover:text-white/80 transition-colors" />
                   </div>
                 )}
                 <input
@@ -93,12 +155,14 @@ const Profile = () => {
             <div className="md:w-2/3 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-white/80 mb-2">Username</label>
+                  <label className="block text-sm font-medium text-white/80 mb-2">Full Name</label>
                   <input
                     type="text"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     className="input-glass w-full"
+                    placeholder='Enter Your Full Name'
+                    required
                   />
                 </div>
                 <div>
@@ -108,6 +172,8 @@ const Profile = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="input-glass w-full"
+                    placeholder='Enter Your Email Address'
+                    required
                   />
                 </div>
                 <div>
@@ -117,15 +183,25 @@ const Profile = () => {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="input-glass w-full"
+                    placeholder='Enter Your Number'
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-white/80 mb-2">Date of Birth</label>
-                  <input
-                    type="date"
-                    value={formData.dob}
-                    onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-                    className="input-glass w-full"
+                  <DatePicker
+                    selected={formData.dob}
+                    onChange={(date) => setFormData({ ...formData, dob: date })}
+                    maxDate={new Date()}
+                    showYearDropdown
+                    scrollableYearDropdown
+                    placeholderText="Select your DOB"
+                    className="input-glass w-full pl-10"
+
+                    calendarClassName="dark-datepicker"
+                    dayClassName={(date) =>
+                      date > new Date() ? 'disabled-day' : ''
+                      
+                    }
                   />
                 </div>
                 <div>
@@ -134,6 +210,7 @@ const Profile = () => {
                     value={formData.gender}
                     onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                     className="input-glass w-full"
+                    required
                   >
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -165,7 +242,7 @@ const Profile = () => {
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 hover:text-white"
                         >
                           {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                         </button>
@@ -200,7 +277,7 @@ const Profile = () => {
               {/* Save Button */}
               <div className="flex justify-end space-x-4 pt-6">
                 <button className="btn-secondary">Cancel</button>
-                <button className="btn-primary">Save Changes</button>
+                <button className="btn-primary" onClick={handleSaveChanges}>Save Changes</button>
               </div>
             </div>
           </div>
