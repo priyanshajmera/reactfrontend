@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -13,8 +13,20 @@ import Signup from './pages/Signup';
 import Profile from './pages/profile';
 import AuthGuard from './components/AuthGuard'; // Import AuthGuard
 import OutfitDetails from './pages/OutfitDetails';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 const App: React.FC = () => {
+  useEffect(() => {
+    const configureStatusBar = async () => {
+      try {
+        await StatusBar.setOverlaysWebView({ overlay: false });
+        await StatusBar.setStyle({ style: Style.Dark }); // or Style.Light based on theme
+      } catch (error) {
+        console.log('StatusBar plugin not available');
+      }
+    };
+    configureStatusBar();
+  }, []);
   return (
     <Router>
       <div className="min-h-screen flex flex-col">
@@ -76,12 +88,15 @@ const App: React.FC = () => {
           />
 
           <Route path="/wardrobe/:id" element={
-              <AuthGuard>
-                <OutfitDetails />
-              </AuthGuard>
-            }  />
+            <AuthGuard>
+              <OutfitDetails />
+            </AuthGuard>
+          } />
         </Routes>
-        <Footer />
+        <div className="hidden md:block">
+          <Footer />
+        </div>
+
       </div>
     </Router>
   );

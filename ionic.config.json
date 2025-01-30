@@ -1,0 +1,7 @@
+{
+  "name": "vite-react-typescript-starter",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

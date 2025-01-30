@@ -88,31 +88,12 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Stay Updated</h3>
-            <p className="text-white/60 text-sm mb-4">
-              Subscribe to our newsletter for style tips and updates.
-            </p>
-            <form className="space-y-2">
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="input-glass w-full pl-10 pr-4 py-2"
-                />
-              </div>
-              <button type="submit" className="btn-primary w-full">
-                Subscribe
-              </button>
-            </form>
-          </div>
+          
         </div>
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-white/10 text-center text-white/60 text-sm">
-          <p>© {currentYear} LuxeStyle AI. All rights reserved.</p>
+          <p>© {currentYear} Slayrs. All rights reserved.</p>
         </div>
       </div>
     </footer>

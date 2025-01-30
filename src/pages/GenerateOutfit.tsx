@@ -378,7 +378,7 @@ const GenerateOutfit = () => {
               </div>
             )
           ) : (
-            <div className="flex flex-col items-center justify-center h-full">
+            <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
               <p className="text-white/50 text-lg text-center">
                 Your perfect outfit will appear here! Let the magic happen! ✨
               </p>

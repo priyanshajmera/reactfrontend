@@ -24,8 +24,8 @@ const OOTD = () => {
 
   useEffect(() => {
     // Extract Top and Bottom image URLs
-    const top = currentOutfit?.find((item) => item.key === 'Top')?.clothId.image_url;
-    const bottom = currentOutfit?.find((item) => item.key === 'Bottom')?.clothId.image_url;
+    const top = currentOutfit?.find((item) => item.key === 'Top')?.clothId?.image_url;
+    const bottom = currentOutfit?.find((item) => item.key === 'Bottom')?.clothId?.image_url;
 
     if (!top || !bottom) {
       console.error('Missing top or bottom image URL');
@@ -138,21 +138,21 @@ const OOTD = () => {
 
           <div className="space-y-6">
             {currentOutfit?.map((item) => (
-              <div key={item.clothId.id} className="glass hover:bg-white/5 transition-colors">
+              <div key={item.clothId?.id} className="glass hover:bg-white/5 transition-colors">
                 <div className="flex justify-between gap-4 p-4">
                   <div className="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
                     <img
-                      src={item.clothId.image_url}
+                      src={item.clothId?.image_url}
                       alt={item.key}
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="flex flex-col align-top flex-grow">
-                    <h3 className="font-semibold mb-1">{item?.clothId.tags}</h3>
-                    <p className="text-white/70 text-sm mb-1">{item?.clothId.subcategory}</p>
+                    <h3 className="font-semibold mb-1">{item?.clothId?.tags}</h3>
+                    <p className="text-white/70 text-sm mb-1">{item?.clothId?.subcategory}</p>
                     <div className="flex items-center gap-2">
                       <span className="text-xs px-2 py-1 rounded-full bg-white/10">
-                        {item?.clothId.category}
+                        {item?.clothId?.category}
                       </span>
                     </div>
                   </div>

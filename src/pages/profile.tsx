@@ -3,14 +3,15 @@ import { motion } from 'framer-motion';
 import { Camera, X, Eye, EyeOff } from 'lucide-react';
 import apiClient from '../apiclient';
 import Swal from 'sweetalert2';
-import { error } from 'console';
 import DatePicker from 'react-datepicker';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate=useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -276,7 +277,7 @@ const Profile = () => {
 
               {/* Save Button */}
               <div className="flex justify-end space-x-4 pt-6">
-                <button className="btn-secondary">Cancel</button>
+                <button className="btn-secondary" onClick={() => navigate('/dashboard')}>Cancel</button>
                 <button className="btn-primary" onClick={handleSaveChanges}>Save Changes</button>
               </div>
             </div>
