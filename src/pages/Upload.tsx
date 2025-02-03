@@ -26,7 +26,11 @@ const Upload = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      const allowedTypes = [
+        'image/jpeg', 'image/png', 'image/bmp',
+        'image/webp', 'image/svg+xml', 'image/tiff',
+        'image/heif', 'image/heic'
+      ];
 
       if (!allowedTypes.includes(file.type)) {
         alert('Only image files (JPEG, PNG, GIF) are allowed.');
@@ -52,15 +56,15 @@ const Upload = () => {
       });
       return;
     }
-  
+
     const formData = new FormData();
     formData.append('category', selectedCategory);
     formData.append('subcategory', selectedSubcategory);
     formData.append('tags', itemName);
     formData.append('image', selectedFile);
-  
+
     let currentMessageIndex = 0;
-    const messages = ['Uploading file...', 'Analyzing...','Removing Background...','Generating Description...'];
+    const messages = ['Uploading file...', 'Analyzing...', 'Removing Background...', 'Generating Description...'];
     let messageInterval: NodeJS.Timeout | undefined;
     // Function to update SweetAlert messages periodically
     const updateMessage = () => {
@@ -70,42 +74,42 @@ const Upload = () => {
       Swal.showLoading();
       currentMessageIndex = (currentMessageIndex + 1) % messages.length; // Cycle through messages
     };
-  
+
     try {
       console.log('Upload clicked');
       // Show initial alert with loader
       Swal.fire({
-        
+
         text: messages[0],
         allowOutsideClick: false,
         allowEscapeKey: false,
         showConfirmButton: false,
-        
+
         willOpen: () => {
           Swal.showLoading();
         },
       });
-  
+
       // Start the message update interval
-       messageInterval = setInterval(updateMessage, 3000); // Change message every 3 seconds
-  
+      messageInterval = setInterval(updateMessage, 3000); // Change message every 3 seconds
+
       // Perform the actual upload
       const response = await apiClient.post('/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-  
+
       // Clear the message interval after the upload completes
       clearInterval(messageInterval);
-  
+
       if (response.status === 201) {
         Swal.fire({
           icon: 'success',
           title: 'Upload Successful',
           text: 'Your item has been uploaded successfully!',
         });
-  
+
         // Reset form state if needed
         handleRemoveImage();
         setItemName('');
@@ -122,7 +126,7 @@ const Upload = () => {
 
       clearInterval(messageInterval);
       console.error('Error uploading file:', error);
-  
+
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -132,8 +136,8 @@ const Upload = () => {
       setUploading(false);
     }
   };
-  
-  
+
+
 
   return (
     <div className="page-container pt-24">
