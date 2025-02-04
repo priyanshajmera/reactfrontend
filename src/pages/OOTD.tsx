@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Share2, Download, X } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import apiClient from '../apiclient';
 
 const OOTD = () => {
@@ -18,6 +18,7 @@ const OOTD = () => {
   const [suggestion, setSuggestion] = useState("");
   const [showNamePopup, setShowNamePopup] = useState(false);
   const [outfitName, setOutfitName] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!currentOutfit) {
@@ -96,7 +97,7 @@ const OOTD = () => {
     }
   };
 
-  
+
 
   return (
     <div className="page-container pt-24">
@@ -153,6 +154,15 @@ const OOTD = () => {
                 disabled={saveSuccess}
               >
                 {saveSuccess ? "Saved to Favorites ✓" : "Save to Favorites"}
+              </button>
+              <button
+                onClick={() => navigate('/favorites')}
+                className="w-full  btn-primary"
+              >
+                Go To Favorites
+              </button>
+              <button onClick={() => navigate('/generate')} className="glass w-full btn-primary">
+                Generate New Outfit
               </button>
 
             </div>

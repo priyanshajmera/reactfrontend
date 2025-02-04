@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, User, ChevronDown, LogOut, Sparkles, Menu } from 'lucide-react';
+import { Home, User, ChevronDown, LogOut, Sparkles, Menu, LogIn } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 import { logout } from '../utils/logout';
 

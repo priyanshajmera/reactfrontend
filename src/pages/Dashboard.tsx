@@ -41,6 +41,13 @@ const Dashboard = () => {
       link: '/generate',
       color: 'pink',
     },
+    {
+      title: 'Favorites Outfits',
+      description: 'Your Saved outfits',
+      icon: Wand2,
+      link: '/favorites',
+      color: 'pink',
+    },
   ];
 
   const scrollContainerRef = useRef(null);
