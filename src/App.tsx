@@ -14,6 +14,7 @@ import Profile from './pages/profile';
 import AuthGuard from './components/AuthGuard'; // Import AuthGuard
 import OutfitDetails from './pages/OutfitDetails';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import Favorites from './pages/fav';
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -90,6 +91,11 @@ const App: React.FC = () => {
           <Route path="/wardrobe/:id" element={
             <AuthGuard>
               <OutfitDetails />
+            </AuthGuard>
+          } />
+          <Route path="/favorites" element={
+            <AuthGuard>
+              <Favorites />
             </AuthGuard>
           } />
         </Routes>
