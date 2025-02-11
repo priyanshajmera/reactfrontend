@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { User, ChevronDown, LogOut, Sparkles, Menu, LogIn } from 'lucide-react';
+import { User, ChevronDown, LogOut, Sparkles } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 import { logout } from '../utils/logout';
 import { motion } from 'framer-motion';
@@ -9,7 +9,6 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
   const isPublicPage = ['/', '/login', '/signup'].includes(location.pathname);
@@ -36,27 +35,16 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout(navigate, setLoggedIn);
-    setIsMobileMenuOpen(false);
   };
 
   return (
     <nav className="fixed w-full z-50 bg-neutral-900/95 backdrop-blur-md border-b border-white/10">
       <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between md:justify-between relative">
-          {/* Mobile Menu Button - Hidden on public pages */}
-          {!isPublicPage && (
-            <button
-              className="md:hidden p-2 text-white hover:text-purple-400 absolute left-0"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-          )}
-
-          {/* Centered Logo */}
+        <div className="flex items-center justify-between relative">
+          {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center space-x-2 mx-auto"
+            className="flex items-center space-x-2"
           >
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -82,9 +70,9 @@ const Navbar = () => {
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation - Hidden on public pages */}
+          {/* Desktop Profile Menu - Hidden on public pages */}
           {!isPublicPage && (
-            <div className="hidden md:flex items-center space-x-6 absolute right-0">
+            <div className="flex items-center space-x-6">
               {loggedIn && (
                 <div className="relative">
                   <button
@@ -117,30 +105,6 @@ const Navbar = () => {
             </div>
           )}
         </div>
-
-        {/* Mobile Menu - Hidden on public pages */}
-        {!isPublicPage && isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4">
-            {loggedIn && (
-              <div className="space-y-4">
-                <Link
-                  to="/profile"
-                  className="block text-white hover:text-purple-400"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Profile
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left text-white hover:text-purple-400 flex items-center"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </nav>
   );
