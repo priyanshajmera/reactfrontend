@@ -45,11 +45,11 @@ const MobileNav = () => {
   return (
     <>
       {/* Spacer div to prevent content from being hidden behind the navbar */}
-      <div className="h-20 md:hidden" />
+      <div className="h-24 md:hidden" />
       
-      <div className="fixed bottom-0 left-0 right-0 z-[9999] safe-area-bottom md:hidden">
-        <div className="bg-neutral-900 border-t border-white/10">
-          <div className="flex items-center justify-between px-6 py-2 max-w-md mx-auto">
+      <div className="fixed bottom-4 left-4 right-4 z-[9999] safe-area-bottom md:hidden">
+        <div className="bg-neutral-900/95 backdrop-blur-md rounded-full shadow-lg mx-auto max-w-md border border-white/10">
+          <div className="flex items-center justify-between px-6 py-3">
             {tabs.map((tab) => {
               const isActive = location.pathname === tab.path;
               return (
