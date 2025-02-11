@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, User, ChevronDown, LogOut, Sparkles, Menu, LogIn } from 'lucide-react';
+import { User, ChevronDown, LogOut, Sparkles, Menu, LogIn } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 import { logout } from '../utils/logout';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const location = useLocation();
@@ -11,10 +12,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const isHomePage = location.pathname === '/';
-  const isDashboardPage = location.pathname === '/dashboard';
-  const isLoginPage = location.pathname === '/login';
-  const isSignUpPage = location.pathname === '/signup';
+  const isPublicPage = ['/', '/login', '/signup'].includes(location.pathname);
 
   const isTokenValid = (token: string) => {
     try {
@@ -44,116 +42,103 @@ const Navbar = () => {
   return (
     <nav className="fixed w-full z-50 bg-neutral-900/95 backdrop-blur-md border-b border-white/10">
       <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between md:justify-between">
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-white hover:text-purple-400"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+        <div className="flex items-center justify-between md:justify-between relative">
+          {/* Mobile Menu Button - Hidden on public pages */}
+          {!isPublicPage && (
+            <button
+              className="md:hidden p-2 text-white hover:text-purple-400 absolute left-0"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+          )}
 
-          {/* Logo - Centered on mobile */}
-          <Link
-            to="/"
-            className="flex items-center space-x-2 group text-white hover:text-purple-400 transition-colors absolute left-1/2 -translate-x-1/2 md:static md:transform-none"
+          {/* Centered Logo */}
+          <Link 
+            to="/" 
+            className="flex items-center space-x-2 mx-auto"
           >
-            <Sparkles className="w-6 h-6 text-purple-400 transition-transform duration-300 group-hover:scale-110" />
-            <span className="text-lg font-bold">Slayrs</span>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center space-x-2"
+            >
+              <motion.div
+                animate={{ 
+                  rotate: [0, 10, -10, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              >
+                <Sparkles className="w-8 h-8 text-purple-400" />
+              </motion.div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Slayrs
+              </span>
+            </motion.div>
           </Link>
 
-          {/* Right Section */}
-          <div className="flex items-center space-x-4">
-            {/* Conditional Home Icon */}
-            {!isHomePage && !isDashboardPage && !isLoginPage && !isSignUpPage && (
-              <Link
-                to="/dashboard"
-                className="hidden md:flex items-center space-x-1 group text-white hover:text-purple-400 transition-colors"
-              >
-                <Home className="w-6 h-6" />
-                <span className="text-lg">Home</span>
-              </Link>
-            )}
-
-            {/* Sign In Button or Profile Menu */}
-            {isHomePage && !loggedIn ? (
-              <Link
-                to="/login"
-                className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition"
-              >
-                Sign In
-              </Link>
-            ) : (
-              loggedIn && (
+          {/* Desktop Navigation - Hidden on public pages */}
+          {!isPublicPage && (
+            <div className="hidden md:flex items-center space-x-6 absolute right-0">
+              {loggedIn && (
                 <div className="relative">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="p-2 text-white hover:text-purple-400 transition-colors flex items-center space-x-1"
-                    aria-label="Profile menu"
+                    className="flex items-center space-x-2 text-white hover:text-purple-400"
                   >
-                    <User className="w-6 h-6" />
+                    <User className="w-5 h-5" />
                     <ChevronDown className="w-4 h-4" />
                   </button>
-
                   {isProfileOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-neutral-900/95 shadow-lg rounded-lg border border-white/10">
+                    <div className="absolute right-0 mt-2 w-48 bg-neutral-800 rounded-lg shadow-lg py-2">
                       <Link
                         to="/profile"
-                        className="dropdown-item flex items-center space-x-2 p-3 hover:bg-purple-500/10 transition"
+                        className="block px-4 py-2 text-white hover:bg-purple-500/20"
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <User className="w-4 h-4" />
-                        <span>Profile</span>
+                        Profile
                       </Link>
                       <button
-                        className="dropdown-item flex items-center space-x-2 p-3 w-full text-left hover:bg-purple-500/10 transition"
                         onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 text-white hover:bg-purple-500/20 flex items-center"
                       >
-                        <LogOut className="w-4 h-4" />
-                        <span>Logout</span>
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Logout
                       </button>
                     </div>
                   )}
                 </div>
-              )
-            )}
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 py-4 border-t border-white/10">
-            <div className="flex flex-col space-y-4">
-              {!isHomePage && !isDashboardPage && !isLoginPage && !isSignUpPage && (
-                <Link
-                  to="/dashboard"
-                  className="flex items-center space-x-2 text-white hover:text-purple-400 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Home className="w-6 h-6" />
-                  <span>Home</span>
-                </Link>
-              )}
-              {loggedIn && (
-                <>
-                  <Link
-                    to="/profile"
-                    className="flex items-center space-x-2 text-white hover:text-purple-400 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <User className="w-6 h-6" />
-                    <span>Profile</span>
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center space-x-2 text-white hover:text-purple-400 transition-colors"
-                  >
-                    <LogOut className="w-6 h-6" />
-                    <span>Logout</span>
-                  </button>
-                </>
               )}
             </div>
+          )}
+        </div>
+
+        {/* Mobile Menu - Hidden on public pages */}
+        {!isPublicPage && isMobileMenuOpen && (
+          <div className="md:hidden mt-4 pb-4">
+            {loggedIn && (
+              <div className="space-y-4">
+                <Link
+                  to="/profile"
+                  className="block text-white hover:text-purple-400"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left text-white hover:text-purple-400 flex items-center"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
