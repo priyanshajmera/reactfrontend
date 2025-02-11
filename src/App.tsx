@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import MobileNav from './components/MobileNav';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Upload from './pages/Upload';
@@ -98,6 +99,7 @@ const App: React.FC = () => {
             </AuthGuard>
           } />
         </Routes>
+        <MobileNav />
       </div>
     </Router>
   );
