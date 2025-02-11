@@ -5,6 +5,15 @@ import { Sparkles, Instagram, Twitter, Facebook, Youtube, Mail } from 'lucide-re
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
+  // Check if the app is running in a mobile environment
+  const isMobileApp = window.matchMedia('(max-width: 768px)').matches && 
+                     (window.Capacitor?.isNative || window.Capacitor?.platform !== 'web');
+
+  // Don't render footer in mobile app
+  if (isMobileApp) {
+    return null;
+  }
+
   return (
     <footer className="bg-neutral-900/80 border-t border-white/10 mt-auto">
       <div className="container mx-auto px-4 py-12">
@@ -88,7 +97,23 @@ const Footer = () => {
             </ul>
           </div>
 
-          
+          {/* Newsletter Section */}
+          <div>
+            <h3 className="text-white font-semibold mb-4">Newsletter</h3>
+            <div className="flex items-center space-x-2">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="bg-white/10 text-white/60 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
+              />
+              <button
+                className="bg-purple-400 hover:bg-purple-500 text-white p-2 rounded-lg transition-colors"
+                aria-label="Subscribe to newsletter"
+              >
+                <Mail className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Bottom Bar */}
