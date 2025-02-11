@@ -43,7 +43,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between relative">
           {/* Logo */}
           <Link 
-            to="/" 
+            to="/dashboard" 
             className="flex items-center space-x-2"
           >
             <motion.div
@@ -86,9 +86,10 @@ const Navbar = () => {
                     <div className="absolute right-0 mt-2 w-48 bg-neutral-800 rounded-lg shadow-lg py-2">
                       <Link
                         to="/profile"
-                        className="block px-4 py-2 text-white hover:bg-purple-500/20"
+                        className="w-full text-left px-4 py-2 text-white hover:bg-purple-500/20 flex items-center"
                         onClick={() => setIsProfileOpen(false)}
                       >
+                        <User className="w-4 h-4 mr-2" />
                         Profile
                       </Link>
                       <button
