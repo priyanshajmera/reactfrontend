@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Upload from './pages/Upload';
@@ -11,7 +10,7 @@ import OOTD from './pages/OOTD';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/profile';
-import AuthGuard from './components/AuthGuard'; // Import AuthGuard
+import AuthGuard from './components/AuthGuard';
 import OutfitDetails from './pages/OutfitDetails';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import Favorites from './pages/fav';
@@ -99,10 +98,6 @@ const App: React.FC = () => {
             </AuthGuard>
           } />
         </Routes>
-        <div className="hidden md:block">
-          <Footer />
-        </div>
-
       </div>
     </Router>
   );
