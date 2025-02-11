@@ -119,14 +119,17 @@ const Home = () => {
   };
 
   return (
-    <div className="page-container min-h-screen pt-16 sm:pt-24 px-4 sm:px-6 lg:px-8">
+    <div className="page-container min-h-screen px-4 sm:px-6 lg:px-8 safe-area-top">
+      {/* Add padding for status bar on iOS/Android */}
+      <div className="pt-safe-top" />
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="text-center mb-8 sm:mb-16 mt-16"
+        className="text-center mb-8 sm:mb-16 mt-4 sm:mt-8"
       >
-        <div className="relative inline-block max-w-[90%] sm:max-w-none">
+        <div className="relative inline-block max-w-[90%] sm:max-w-none mt-28">
           <motion.div
             animate={{ 
               scale: [1, 1.2, 1],
@@ -284,9 +287,9 @@ const Home = () => {
         )}
       </motion.div>
 
-      {/* Background Elements */}
+      {/* Adjust background elements for safe areas */}
       <motion.div 
-        className="fixed -z-10 top-1/4 left-1/4 w-24 sm:w-32 lg:w-48 h-24 sm:h-32 lg:h-48 bg-purple-500/20 rounded-full blur-3xl"
+        className="fixed -z-10 top-[calc(25%+env(safe-area-inset-top))] left-1/4 w-24 sm:w-32 lg:w-48 h-24 sm:h-32 lg:h-48 bg-purple-500/20 rounded-full blur-3xl"
         animate={{
           scale: [1, 1.2, 1],
           opacity: [0.2, 0.3, 0.2]
@@ -298,7 +301,7 @@ const Home = () => {
         }}
       />
       <motion.div 
-        className="fixed -z-10 bottom-1/4 right-1/4 w-24 sm:w-32 lg:w-48 h-24 sm:h-32 lg:h-48 bg-pink-500/20 rounded-full blur-3xl"
+        className="fixed -z-10 bottom-[calc(25%+env(safe-area-inset-bottom))] right-1/4 w-24 sm:w-32 lg:w-48 h-24 sm:h-32 lg:h-48 bg-pink-500/20 rounded-full blur-3xl"
         animate={{
           scale: [1, 1.2, 1],
           opacity: [0.2, 0.3, 0.2]
