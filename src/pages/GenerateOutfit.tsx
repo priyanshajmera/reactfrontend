@@ -301,8 +301,17 @@ const GenerateOutfit = () => {
 
                   <div
                     ref={scrollRef}
-                    className="flex overflow-hidden space-x-4 py-4"
+                    className="flex space-x-4 py-4 overflow-x-auto scrollbar-hide"
+                    style={{
+                      scrollSnapType: 'x mandatory',
+                      WebkitOverflowScrolling: 'touch',
+                      overflowX: 'auto',
+                      display: 'flex',
+                      scrollBehavior: 'smooth',
+                      scrollbarWidth: 'none' // For Firefox
+                    }}
                   >
+
                     {outfits[currentOutfit].items.map((item: any, index) => (
                       item.clothId?.image_url ? (
                         <img

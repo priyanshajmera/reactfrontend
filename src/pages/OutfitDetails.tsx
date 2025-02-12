@@ -84,11 +84,11 @@ const OutfitDetails = () => {
       background: '#1F2937', // Background color (dark palette)
       color: '#FFFFFF', // Text color
     });
-  
+
     if (result.isConfirmed) {
       try {
         await apiClient.delete(`/outfits/${id}`); // Replace with your DELETE API endpoint
-        
+
         Swal.fire({
           title: 'Deleted!',
           text: 'Your item has been deleted.',
@@ -99,7 +99,7 @@ const OutfitDetails = () => {
         });
         navigate('/wardrobe');
       } catch (error) {
-        
+
         Swal.fire({
           title: 'Error!',
           text: 'An error occurred while deleting the item.',
@@ -210,7 +210,7 @@ const OutfitDetails = () => {
                   value={formData.subcategory}
                   onChange={handleChange}
                   className="input-glass w-full"
-                   // Disable if no category is selected
+                // Disable if no category is selected
                 >
                   <option value="">Select Sub-Category</option>
                   {categories
@@ -231,32 +231,35 @@ const OutfitDetails = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="flex justify-between items-center mt-12 pt-6 border-t border-white/10"
+            className="flex flex-col sm:flex-row sm:justify-between items-center mt-12 pt-6 border-t border-white/10 gap-4 sm:gap-6"
           >
+            {/* Delete Button */}
             <button
               onClick={handleDelete}
-              className="btn-secondary px-8 bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center gap-2"
+              className="btn-secondary w-full sm:w-auto px-8 bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center gap-2"
             >
               <Trash2 className="w-4 h-4" />
               <span>Delete</span>
             </button>
 
-            <div className="flex gap-6">
+            {/* Cancel & Save Buttons Group */}
+            <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-4">
               <button
                 onClick={() => navigate('/wardrobe')}
-                className="btn-secondary px-8"
+                className="btn-secondary w-full sm:w-auto px-8"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
-                className="btn-primary px-8 flex items-center justify-center gap-2"
+                className="btn-primary w-full sm:w-auto px-8 flex items-center justify-center gap-2"
               >
                 <Save className="w-4 h-4" />
                 <span>Save</span>
               </button>
             </div>
           </motion.div>
+
         </div>
       </motion.div>
     </div>

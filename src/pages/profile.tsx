@@ -10,8 +10,9 @@ const Profile = () => {
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -49,51 +50,62 @@ const Profile = () => {
   }, []);
 
   const handleSaveChanges = async () => {
+    console.log('profile called');
+
     try {
-      const resp = await apiClient.put('profile', { ...formData, profileimageurl: profileImage });
-      console.log('resp', resp);
-      console.log('status', resp.status);
+      const formDataToSend = new FormData();
+      formDataToSend.append('username', formData.username);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('dob', formData.dob ? formatDateForInput(formData.dob): "");
+      formDataToSend.append('gender', formData.gender);
+      formDataToSend.append('currentPassword', formData.currentPassword || "");
+      formDataToSend.append('newPassword', formData.newPassword || "");
+      formDataToSend.append('confirmPassword', formData.confirmPassword || "");
+
+      formDataToSend.append('profileimageurl', selectedFile || ""); // Attach the file
+
+      console.log('formdata',formData);
+      const resp = await apiClient.put('profile', formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
       if (resp.status === 200 && resp.data) {
         setFormData({ ...resp.data.user, dob: formatDateForInput(resp.data.user.dob) });
         setProfileImage(resp.data.user.profileimageurl);
         Swal.fire({
           title: 'Saved!',
-          text: 'Your profile has been saved.',
+          text: 'Your profile has been updated.',
           icon: 'success',
-          confirmButtonColor: '#A855F7', // Same primary color
+          confirmButtonColor: '#A855F7',
           background: '#1F2937',
           color: '#FFFFFF',
         });
       }
-      else {
-        throw new Error('Unexpected response structure or status');
-      }
-    }
-    catch (error) {
+    } catch (error) {
       Swal.fire({
         title: 'Error!',
         text: 'An error occurred while saving the profile.',
         icon: 'error',
-        confirmButtonColor: '#A855F7', // Same primary color
+        confirmButtonColor: '#A855F7',
         background: '#1F2937',
         color: '#FFFFFF',
       });
     }
   };
 
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setSelectedFile(file); // Store the actual file
+      setProfileImage(URL.createObjectURL(file)); // Show preview
     }
   };
 
   const removeImage = () => {
     setProfileImage(null);
+    setSelectedFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -122,33 +134,17 @@ const Profile = () => {
               <div className="relative">
                 {profileImage ? (
                   <div className="relative">
-                    <img
-                      src={profileImage}
-                      alt="Profile"
-                      className="w-full aspect-square rounded-lg object-cover border-2 border-purple-400"
-                    />
-                    <button
-                      onClick={removeImage}
-                      className="absolute -top-2 -right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors"
-                    >
+                    <img src={profileImage} alt="Profile" className="w-full aspect-square rounded-lg object-cover border-2 border-purple-400" />
+                    <button onClick={removeImage} className="absolute -top-2 -right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full aspect-square rounded-lg bg-neutral-800 flex items-center justify-center cursor-pointer hover:bg-neutral-700 transition-colors group"
-                  >
-                    <Camera className="w-12 h-12 z-10 text-purple-400 group-hover:text-white/80 transition-colors" />
+                  <div onClick={() => fileInputRef.current?.click()} className="w-full aspect-square rounded-lg bg-neutral-800 flex items-center justify-center cursor-pointer hover:bg-neutral-700 transition-colors group">
+                    <Camera className="w-12 h-12 text-purple-400 group-hover:text-white/80 transition-colors" />
                   </div>
                 )}
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleImageUpload}
-                  accept="image/*"
-                  className="hidden"
-                />
+                <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
               </div>
             </div>
 
@@ -201,7 +197,7 @@ const Profile = () => {
                     calendarClassName="dark-datepicker"
                     dayClassName={(date) =>
                       date > new Date() ? 'disabled-day' : ''
-                      
+
                     }
                   />
                 </div>
