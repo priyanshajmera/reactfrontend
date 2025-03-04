@@ -27,7 +27,7 @@ const Wardrobe = () => {
   useEffect(() => {
     const fetchWardrobe = async () => {
       try {
-        const response = await apiClient.get<WardrobeItem[]>('/wardrobe'); // Replace with your API URL
+        const response = await apiClient.get<WardrobeItem[]>('/outfits/wardrobe'); // Replace with your API URL
         setWardrobe(response.data);
         setFilteredWardrobe(response.data); // Initially show all items
       } catch (error) {

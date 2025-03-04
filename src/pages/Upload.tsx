@@ -94,7 +94,7 @@ const Upload = () => {
       messageInterval = setInterval(updateMessage, 3000); // Change message every 3 seconds
 
       // Perform the actual upload
-      const response = await apiClient.post('/upload', formData, {
+      const response = await apiClient.post('/outfits/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
