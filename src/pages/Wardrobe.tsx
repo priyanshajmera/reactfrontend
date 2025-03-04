@@ -27,7 +27,7 @@ const Wardrobe = () => {
   useEffect(() => {
     const fetchWardrobe = async () => {
       try {
-        const response = await apiClient.get<WardrobeItem[]>('/outfits/wardrobe'); // Replace with your API URL
+        const response = await apiClient.get<WardrobeItem[]>('/wardrobe'); // Replace with your API URL
         setWardrobe(response.data);
         setFilteredWardrobe(response.data); // Initially show all items
       } catch (error) {
@@ -52,7 +52,7 @@ const Wardrobe = () => {
       background: '#1F2937', // Background color (dark palette)
       color: '#FFFFFF', // Text color
     });
-  
+
     if (result.isConfirmed) {
       try {
         await apiClient.delete(`/outfits/${id}`); // Replace with your DELETE API endpoint
@@ -173,7 +173,7 @@ const Wardrobe = () => {
                 )}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center space-y-2">
                   <button className="btn-primary text-sm w-32"
-                  onClick={() => navigate(`/wardrobe/${item.id}`)}
+                    onClick={() => navigate(`/wardrobe/${item.id}`)}
                   >View Details</button>
                   <button
                     className="btn-delete text-sm w-32"
